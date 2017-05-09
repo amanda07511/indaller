@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Enterprise = sequelize.define('Enterprise', {
-    id: DataTypes.INTEGER,
     user: DataTypes.INTEGER,
     nom: DataTypes.STRING,
     domaine: DataTypes.INTEGER,

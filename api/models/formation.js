@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Formation = sequelize.define('Formation', {
-    id: DataTypes.INTEGER,
     user: DataTypes.INTEGER,
     ecole: DataTypes.STRING,
     domaine: DataTypes.INTEGER,

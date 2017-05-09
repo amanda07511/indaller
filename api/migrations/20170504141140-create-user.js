@@ -1,32 +1,44 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('Formations', {
+    return queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user: {
+      id: {
         type: Sequelize.INTEGER
       },
-      ecole: {
+      prenom: {
         type: Sequelize.STRING
       },
-      domaine: {
+      nom: {
+        type: Sequelize.STRING
+      },
+      mail: {
+        type: Sequelize.STRING
+      },
+      tel: {
         type: Sequelize.INTEGER
-      },
-      diplome: {
-        type: Sequelize.STRING
       },
       ville: {
         type: Sequelize.INTEGER
       },
-      ddd: {
+      password: {
+        type: Sequelize.STRING
+      },
+      photo: {
+        type: Sequelize.STRING
+      },
+      ddn: {
         type: Sequelize.DATE
       },
-      ddf: {
+      etat: {
+        type: Sequelize.BOOLEAN
+      },
+      type: {
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -40,6 +52,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('Formations');
+    return queryInterface.dropTable('Users');
   }
 };

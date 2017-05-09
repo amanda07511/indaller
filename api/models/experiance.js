@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Experiance = sequelize.define('Experiance', {
-    id: DataTypes.INTEGER,
     user: DataTypes.INTEGER,
     titre: DataTypes.STRING,
     enterprise: DataTypes.STRING,

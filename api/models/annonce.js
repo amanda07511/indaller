@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Annonce = sequelize.define('Annonce', {
-    id: DataTypes.INTEGER,
     user: DataTypes.INTEGER,
     domaine: DataTypes.INTEGER,
     titre: DataTypes.INTEGER,
