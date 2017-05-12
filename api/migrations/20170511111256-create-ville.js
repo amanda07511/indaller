@@ -2,17 +2,32 @@
 module.exports = {
   up: function(queryInterface, Sequelize) {
     return queryInterface.createTable('Villes', {
-      id: {
+      ville_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nom: {
+      ville_departement: {
         type: Sequelize.STRING
       },
-      cp: {
+      ville_nom: {
         type: Sequelize.STRING
+      },
+      ville_nom_simple: {
+        type: Sequelize.STRING
+      },
+      ville_nom_reel: {
+        type: Sequelize.STRING
+      },
+      ville_code_postal: {
+        type: Sequelize.STRING
+      },
+      ville_longitude_deg: {
+        type: Sequelize.FLOAT
+      },
+      ville_latitude_deg: {
+        type: Sequelize.FLOAT
       },
       createdAt: {
         allowNull: false,

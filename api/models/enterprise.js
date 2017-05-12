@@ -10,7 +10,8 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+        Enterprise.belongsTo(models.User, {foreignKey: 'user' });
+        Enterprise.belongsTo(models.Domaine, {foreignKey: 'domaine'});
       }
     }
   });
