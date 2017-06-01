@@ -3,7 +3,7 @@ module.exports = function(sequelize, DataTypes) {
   var Annonce = sequelize.define('Annonce', {
     user: DataTypes.INTEGER,
     domaine: DataTypes.INTEGER,
-    titre: DataTypes.INTEGER,
+    titre: DataTypes.STRING,
     description: DataTypes.TEXT,
     lat: DataTypes.STRING,
     lng: DataTypes.STRING,

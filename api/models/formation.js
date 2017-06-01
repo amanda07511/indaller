@@ -7,11 +7,12 @@ module.exports = function(sequelize, DataTypes) {
     diplome: DataTypes.STRING,
     ville: DataTypes.INTEGER,
     ddd: DataTypes.DATE,
-    ddf: DataTypes.INTEGER
+    ddf: DataTypes.DATE
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+        Formation.belongsTo(models.Ville, {foreignKey: 'ville' });
+        Formation.belongsTo(models.Domaine, {foreignKey: 'domaine' });
       }
     }
   });

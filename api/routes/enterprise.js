@@ -109,11 +109,9 @@ router.post('/update', urlencodedParser, function(req,res){
 		    user: decoded.id
 		  }
 		}).then(function(response){
-			response = {
-	      		response: "User  was correctly updated"
-	   		};
-			res.setHeader('Content-Type', 'text/plain');
-			res.end(JSON.stringify(response));
+			req.method = 'GET';
+			res.header('token',token);
+			res.redirect('http://localhost:3000/enterprise/get/');
 			
 		}).catch(function(err) {
 			response = { erro:err}; 

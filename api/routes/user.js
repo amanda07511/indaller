@@ -66,8 +66,6 @@ router.post('/login', urlencodedParser, function(req,res){
 
 });
 
-
-
 // POST create a new user 
 router.post('/signup', urlencodedParser, function (req, res) {
 	
@@ -266,7 +264,6 @@ router.post('/change', urlencodedParser, function(req,res){
 	});//end jwt.verify
 
 });//end post update
-
 
 // POST /change  client change profil to type fournisseur  
 router.post('/delete', urlencodedParser, function(req,res){
