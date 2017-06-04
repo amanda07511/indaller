@@ -284,7 +284,7 @@ router.post('/add/certificat', urlencodedParser, function(req,res){
 			user: decoded.id
 		}).then(function(response){
 			res.header('token',token);
-			res.redirect('http://localhost:3000/dossier/get/');
+			res.redirect('/dossier/get/');
 		}).catch(function(err) {
 			response = { erro:err}; 
 			res.end(JSON.stringify(response));

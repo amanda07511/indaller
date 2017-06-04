@@ -16,6 +16,10 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
          User.hasMany(models.Enterprise, {foreignKey: 'user' });
          User.belongsTo(models.Ville, {foreignKey: 'ville_id' });
+         User.hasMany(models.Annonce, {foreignKey: 'user' });
+         User.hasMany(models.Candidat, {foreignKey: 'candidat' });
+         User.hasMany(models.Rating, {foreignKey: 'de' });
+         User.hasMany(models.Rating, {foreignKey: 'pour' });
       }
     }
   });

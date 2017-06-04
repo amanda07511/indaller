@@ -7,7 +7,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+        Candidat.belongsTo(models.User, {foreignKey: 'candidat' });
+        Candidat.belongsTo(models.Annonce, {foreignKey: 'annonce' });
+        
       }
     }
   });
