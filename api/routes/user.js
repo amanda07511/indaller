@@ -34,6 +34,51 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
+/**
+ * @api {post} /user/login Request User Authentification Login
+ * @apiName Login
+ * @apiGroup User
+ *
+ * @apiParam {String} email Users email.
+ * @apiParam {String} password Users secret word.
+ *
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} Token JSON Web Token with users id.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "Status": 200,
+ *       "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTMsInR5cGUiOjQsImlhdCI6MTQ5NjU4NTc1M30.cBL_vk-wEdaCCOQQspvJzdpx4a4ebCz6nXZwqy2WMgs"
+ *     }
+ *
+ * @apiError UserNotFound The id of the User was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "UserNotFound"
+ *     }
+ *
+ *
+ *@apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ *@apiError InvalidUser If the User has a count bloqued or deleted.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "User bloqued or deleted"
+ *     }
+ */
+
 // POST /login gets urlencoded bodies
 router.post('/login', urlencodedParser, function(req,res){
 
@@ -48,10 +93,9 @@ router.post('/login', urlencodedParser, function(req,res){
 			password: req.body.password
 		}
 	}).then(function (userFound) {
-		if (userFound==null) {
-			return res.json({status: 500, message: "Invalid_credentials"});
-		}
-		if(userFound.type==7||userFound.type==8) return res.sendStatus(401)
+		if (userFound==null) return res.status(404).send("User not found");
+
+		if(userFound.type==7||userFound.type==8) return res.status(401).send("User bloqued or deleted");
 		//create a token with user informationand with an hour of duration
 			var token=jwt.sign({id: userFound.id, type: userFound.type}, 
 				'gato');
@@ -61,10 +105,55 @@ router.post('/login', urlencodedParser, function(req,res){
   
 			res.end(JSON.stringify(response));	
 	}).catch(function(err) { 
-		console.log(err); 
+		return res.status(500).send(err);
 	});
 
 });
+
+/**
+ * @api {post} /user/signup Request User Authentification Signup
+ * @apiName Signup
+ * @apiGroup User
+ *
+ * @apiParam {String} nom Lastname of the User.
+ * @apiParam {String} prenom Firstname of the .User
+ * @apiParam {String} email Users email
+ * @apiParam {String} password Users secret word.
+ * @apiParam {String} photo Users photo in format Base64.
+ * @apiParam {Number} tel Users phone number.
+ * @apiParam {Number} ville City ID.
+ * @apiParam {Date} ddn Users birthday.
+ * @apiParam {Number} type Type of count.
+ *
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} Token JSON Web Token with users id.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "Status": 200,
+ *       "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTMsInR5cGUiOjQsImlhdCI6MTQ5NjU4NTc1M30.cBL_vk-wEdaCCOQQspvJzdpx4a4ebCz6nXZwqy2WMgs"
+ *     }
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidEmail If there other count with the same email.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Invalid Email
+ *     {
+ *       "error": "Invalid email"
+ *     }
+ */
 
 // POST create a new user 
 router.post('/signup', urlencodedParser, function (req, res) {
@@ -79,15 +168,14 @@ router.post('/signup', urlencodedParser, function (req, res) {
 		function(callback) {
 			//Search user by email
 			models.User.findOne({
-				where:{
-					email: req.body.email
-				}
+
+				where: { email: req.body.email }
+
 			}).then(function (userFound) {
-				if (userFound!=null) {
-					res.json({status: 500, message: "Invalid_email"});
-					return callback(new Error('Invalid email'));
-				}
+
+				if (userFound!=null) return res.status(500).send("Invalid email");
 				callback();
+
 			}).catch(function(err) { 
 				console.log(err); 
 			});//end findOne
@@ -118,7 +206,7 @@ router.post('/signup', urlencodedParser, function (req, res) {
 				
 				callback();
 			}).catch(function(err){ 
-				console.log(err); 
+				return res.status(500).send(err);
 			});//end newUser
 
 		},],
@@ -128,19 +216,68 @@ router.post('/signup', urlencodedParser, function (req, res) {
 	});//end Async
 });
 
+/**
+ * @api {get} /user/get Request User Information by id
+ * @apiHeader {String} token Users encripted key.
+ * @apiName UserGet
+ * @apiGroup User
+ *
+ * @apiSuccess {String} id Users unique ID.
+ * @apiSuccess {String} nom Lastname of the User.
+ * @apiSuccess {String} prenom Firstname of the .User
+ * @apiSuccess {String} email Users email.
+ * @apiSuccess {String} photo Users photo in format Base64.
+ * @apiSuccess {Number} tel Users phone number.
+ * @apiSuccess {String} ville City name.
+ * @apiSuccess {Date}   ddn Users birthday.
+ * @apiSuccess {Number} type Type of count.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *			"id": 15,
+ *			"nom": "Marroquin",
+ *			"prenom": "Amanda",
+ *			"email": "amanda@gmail.com",
+ *			"photo": null,
+ *			"tel": "768411809",
+ *			"ville": "Ozan",
+ *			"ddn": "1995-07-11T00:00:00.000Z",
+ *  		"type": 5      
+ * 
+ *		}
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ * 		}
+ */  
+
 // GET user information by user id 
-router.get('/get/', function(req,res){
+router.get('/get', function(req,res){
 
 	//If header token is not defined throw and error status
 	if(!req.get('token')) return res.sendStatus(401)
 	//We get the token and we verify it 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
+
 	  //If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
+
 	  var decoded = jwt.verify(token, 'gato');
 
 	  //Search the user by the decoded id of the token
@@ -155,7 +292,7 @@ router.get('/get/', function(req,res){
 	  			email: userFound.email, 
 	  			photo: userFound.photo,
 	  			tel: userFound.tel,
-				ville_id: userFound.Ville.ville_nom_reel,
+				ville: userFound.Ville.ville_nom_reel,
 				ddn: userFound.ddn,
 				type: userFound.type 
 			};
@@ -168,6 +305,49 @@ router.get('/get/', function(req,res){
 	});
 
 });
+
+
+/**
+ * @api {post} /user/update Request Update User Information 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName UserUpdate
+ * @apiGroup User
+ *
+ * @apiParam {String} nom Lastname of the User.
+ * @apiParam {String} prenom Firstname of the .User
+ * @apiParam {String} email Users email
+ * @apiParam {String} password Users secret word.
+ * @apiParam {String} photo Users photo in format Base64.
+ * @apiParam {Number} tel Users phone number.
+ * @apiParam {Number} ville City ID.
+ * @apiParam {Date} ddn Users birthday.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *			"response":"User  was correctly updated"   
+ * 
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ */  
 
 // POST /update  simple update of information
 router.post('/update', urlencodedParser, function(req,res){
@@ -182,11 +362,8 @@ router.post('/update', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
-	  
+
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.User.update({
@@ -209,13 +386,56 @@ router.post('/update', urlencodedParser, function(req,res){
 			res.end(JSON.stringify(response));
 			
 		}).catch(function(err) {
-			response = { erro:err}; 
-			res.end(JSON.stringify(response));
+			return res.status(500).send(err);
 		});//end findOne;
 
 	});//end jwt.verify
 
 });//end post update
+
+/**
+ * @api {post} /user/change Request for chage type of count 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName UserUpdate
+ * @apiGroup User
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "Status": 200,
+ *       "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTMsInR5cGUiOjQsImlhdCI6MTQ5NjU4NTc1M30.cBL_vk-wEdaCCOQQspvJzdpx4a4ebCz6nXZwqy2WMgs"
+ *     }
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ * @apiError InvalidUser The User don't have the privileges for chage his count
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid User
+ *     {
+ *       "error": "Invalid User"
+ *		}
+ */ 
+
 
 // POST /change  client change profil to type fournisseur  
 router.post('/change', urlencodedParser, function(req,res){
@@ -232,14 +452,11 @@ router.post('/change', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { status:500, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(500).send(err.message);
 	  decoded = jwt.verify(token, 'gato');
-	  console.log(decoded.type);
-	  if(decoded.type!=2&&decoded.type!=3) return res.sendStatus(401)
+	  
+	  if(decoded.type!=2&&decoded.type!=3) return res.status(403).send("Invalid User");
 
 		models.User.update({
 		  	type: req.body.type
@@ -257,30 +474,60 @@ router.post('/change', urlencodedParser, function(req,res){
 			res.end(JSON.stringify(response));
 			
 		}).catch(function(err) {
-			response = { erro:err}; 
-			res.end(JSON.stringify(response));
+			return res.status(403).send(err);
 		});//end findOne;
 
 	});//end jwt.verify
 
 });//end post update
 
+/**
+ * @api {post} /user/delete Request for delete a count 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName UserDelete
+ * @apiGroup User
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "Status": 200,
+ *       "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTMsInR5cGUiOjQsImlhdCI6MTQ5NjU4NTc1M30.cBL_vk-wEdaCCOQQspvJzdpx4a4ebCz6nXZwqy2WMgs"
+ *     }
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ */
+
 // POST /change  client change profil to type fournisseur  
 router.post('/delete', urlencodedParser, function(req,res){
 
-	//If there's no body parametres throw and error status
-	if (!req.body) return res.sendStatus(401)
 	//If header token is not defined throw and error status
 	if(!req.get('token')) return res.sendStatus(401)
 
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.User.update({
@@ -299,15 +546,50 @@ router.post('/delete', urlencodedParser, function(req,res){
 			res.end(JSON.stringify(response));
 			
 		}).catch(function(err) {
-			response = { erro:err}; 
-			res.end(JSON.stringify(response));
+			return res.status(500).send(err);
 		});//end findOne;
 
 	});//end jwt.verify
 
 });//end post update
 
-// POST /change  client change profil to type fournisseur  
+
+/**
+ * @api {post} /user/block Request for block a users count
+ * @apiHeader {String} token Users encripted key.
+ * @apiName UserBlock
+ * @apiGroup User
+ *
+ * @apiParam {String} email Users email
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "Status": 200,
+ *      }
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ */
+// POST /block block an user count 
 router.post('/block', urlencodedParser, function(req,res){
 
 	//If there's no body parametres throw and error status
@@ -320,13 +602,11 @@ router.post('/block', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  
+	  if (err) return res.status(403).send(err);
 	  
 	  var decoded = jwt.verify(token, 'gato');
-	  if(userFound.type==1) return res.sendStatus(401)
+	  if(userFound.type==1) return res.status(403).send("Invalid user");
 
 		models.User.update({
 		  	type: 8
@@ -336,14 +616,10 @@ router.post('/block', urlencodedParser, function(req,res){
 		  }
 		}).then(function(response){
 				
-			// Prepare output in JSON format
-			response = {status: 200};
-			res.setHeader('Content-Type', 'text/plain');
-			res.end(JSON.stringify(response));
+			res.sendStatus(200)
 			
 		}).catch(function(err) {
-			response = { erro:err}; 
-			res.end(JSON.stringify(response));
+			return res.status(403).send(err.message);
 		});//end findOne;
 
 	});//end jwt.verify

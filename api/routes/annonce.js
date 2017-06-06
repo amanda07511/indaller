@@ -34,7 +34,62 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
-// POST /update  simple update of information
+
+
+/**
+ * @api {post} /annonce/add Request for add a new annonce 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName AnnonceAdd
+ * @apiGroup Annonce
+ *
+ *
+ * @apiParam {Number} domaine Domaine ID.
+ * @apiParam {String} titre Title of the annonce.
+ * @apiParam {String} descrition A description of the annonce
+ * @apiParam {Double} lat Latitude of the project in the annonce.
+ * @apiParam {Double} lng Longitude of the project in the annonce.
+ * @apiParam {Number} etat Code of the annonce status.
+ * @apiParam {Date}   ddn Date of publication.
+ * @apiParam {Date}   ddn Date of expiration.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ *     [
+ *		  {
+ *		    "status": 200,
+ *		    "id": 1,
+ *		    "domaine": "IT",
+ *		    "titre": "Developpeur Web",
+ *		    "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		    "lat": "0.98798361241423",
+ *		    "lng": "21.3212309120937",
+ *		    "createAt": "2017-05-31T15:12:07.000Z",
+ *		    "finalization": "2017-07-01T00:00:00.000Z"
+ *		  }
+ *		]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
+// POST /add  Adding new annonce
 router.post('/add', urlencodedParser, function(req,res){
 
 	//If there's no body parametres throw and error status
@@ -47,11 +102,8 @@ router.post('/add', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Annonce.create({
@@ -77,6 +129,60 @@ router.post('/add', urlencodedParser, function(req,res){
 
 });//end post add
 
+/**
+ * @api {post} /annonce/update Request for up to date an annonce 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName AnnonceUpdate
+ * @apiGroup Annonce
+ *
+ *
+ * @apiParam {Number} id Annonce ID.
+ * @apiParam {Number} domaine Domaine ID.
+ * @apiParam {String} titre Title of the annonce.
+ * @apiParam {String} descrition A description of the annonce
+ * @apiParam {Double} lat Latitude of the project in the annonce.
+ * @apiParam {Double} lng Longitude of the project in the annonce.
+ * @apiParam {Number} etat Code of the annonce status.
+ * @apiParam {Date}   ddn Date of publication.
+ * @apiParam {Date}   ddn Date of expiration.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ *     [
+ *		  {
+ *		    "status": 200,
+ *		    "id": 1,
+ *		    "domaine": "IT",
+ *		    "titre": "Developpeur Web",
+ *		    "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		    "lat": "0.98798361241423",
+ *		    "lng": "21.3212309120937",
+ *		    "createAt": "2017-05-31T15:12:07.000Z",
+ *		    "finalization": "2017-07-01T00:00:00.000Z"
+ *		  }
+ *		]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
 // POST /update  simple update of information
 router.post('/update', urlencodedParser, function(req,res){
 
@@ -90,11 +196,8 @@ router.post('/update', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
-	  
+
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Annonce.update({
@@ -123,6 +226,63 @@ router.post('/update', urlencodedParser, function(req,res){
 
 });//end post update
 
+/**
+ * @api {delete} /annonce/delete Request for delete an annonce 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName AnnonceDelete
+ * @apiGroup Annonce
+ *
+ *
+ * @apiParam {Number} id Annonce ID.
+
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ *     [
+ *		  {
+ *		    "status": 200,
+ *		    "id": 1,
+ *		    "domaine": "IT",
+ *		    "titre": "Developpeur Web",
+ *		    "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		    "lat": "0.98798361241423",
+ *		    "lng": "21.3212309120937",
+ *		    "createAt": "2017-05-31T15:12:07.000Z",
+ *		    "finalization": "2017-07-01T00:00:00.000Z"
+ *		  }
+ *		]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ *
+ * @apiError AnnonceNotFound The id of the Annonce was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Annonce not found"
+ *		}
+ *
+ */
+
 // POST /delete gets urlencoded bodies
 router.delete('/delete', urlencodedParser, function(req,res){
 
@@ -136,18 +296,15 @@ router.delete('/delete', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }	 
+
+	  if (err) return res.status(403).send(err.message);
+
 		models.Annonce.find({
 		 	where: { id: req.body.id } 
 		 }).then(function(response){
-		 	if (response==null) {
-				resp = {status: 500, message: "Annonce not found"};
-				return res.end(JSON.stringify(resp));
-			}
-			
+		 	
+		 	if (response==null) return res.status(404).send("Annonce not found");
+				
 			response.destroy();
 			res.header('token',token);
 			res.redirect(303,'/annonce/getMy/');
@@ -158,7 +315,86 @@ router.delete('/delete', urlencodedParser, function(req,res){
 
 });//end post delete
 
-// GET resto by id 
+/**
+ * @api {get} /annonce/getId/:id Request for get an annonce by id 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName AnnonceGetId
+ * @apiGroup Annonce
+ *
+ *
+ * @apiParam {Number} id Annonce ID.
+ *
+ *
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} Token JSON Web Token with users id.
+ * @apiSuccess {Number} id Annonce ID.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   createdAt Date of publication.
+ * @apiSuccess {Date}   finalization Date of expiration.
+ * @apiSuccess {String} nom Lastname of the User.
+ * @apiSuccess {String} prenom Firstname of the .User
+ * @apiSuccess {String} email Users email.
+ * @apiSuccess {String} photo Users photo in format Base64.
+ * @apiSuccess {Number} tel Users phone number.
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *    {
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "domaine": "IT",
+ *		  "titre": "Developpeur Web",
+ * 		  "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		  "lat": "0.98798361241423",
+ *		  "lng": "21.3212309120937",
+ *		  "createAt": "2017-05-31T15:12:07.000Z",
+ *		  "finalization": "2017-07-01T00:00:00.000Z",
+ *		  "user": {
+ *		    "id": 15,
+ *		    "nom": "Marroquin",
+ *		    "prenom": "Amanda",
+ *		    "email": "amanda@gmail.com",
+ *		    "photo": null
+ *		  }
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ *
+ * @apiError AnnonceNotFound The id of the Annonce was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Annonce not found"
+ *		}
+ *
+ */
+
+// GET Annonce by id 
 router.get('/getId/:id', function(req,res){
 
 	var id=decodeURI(req.params.id);
@@ -167,9 +403,9 @@ router.get('/getId/:id', function(req,res){
 		where:{ id: id},
 		include: [{ model: models.User, as: 'User'}, { model: models.Domaine, as: 'Domaine'}]
 	}).then(function (annonceFound) {
-		if (annonceFound==null) {
-			res.json({status: 500, message: "Not coincidences"});
-		}
+
+		if (annonceFound==null) return res.status(404).send("Annonce not found");
+
 		else{
 			// Prepare output in JSON format
 			response = { 
@@ -187,7 +423,8 @@ router.get('/getId/:id', function(req,res){
 					nom: annonceFound.User.nom, 
 					prenom:annonceFound.User.prenom,
 					email: annonceFound.User.email,  
-					photo:annonceFound.User.photo
+					photo:annonceFound.User.photo,
+					tel:annonceFound.User.tel
 				}
    			};
    			res.setHeader('Content-Type', 'text/plain');
@@ -201,6 +438,73 @@ router.get('/getId/:id', function(req,res){
 
 });
 
+/**
+ * @api {get} /annonce/getMy Request for get annonces by users id 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName AnnonceGetMy
+ * @apiGroup Annonce
+ *
+ *
+ * @apiParam {Number} id Annonce ID.
+ *
+ *
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} Token JSON Web Token with users id.
+ * @apiSuccess {Number} id Annonce ID.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   createdAt Date of publication.
+ * @apiSuccess {Date}   finalization Date of expiration.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *   [{
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "domaine": "IT",
+ *		  "titre": "Developpeur Web",
+ * 		  "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		  "lat": "0.98798361241423",
+ *		  "lng": "21.3212309120937",
+ *		  "createAt": "2017-05-31T15:12:07.000Z",
+ *		  "finalization": "2017-07-01T00:00:00.000Z",
+ *		}
+ *	]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ *
+ * @apiError AnnonceNotFound The id of the Annonce was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Annonce not found"
+ *		}
+ *
+ */
+
 // GET resto by id user 
 router.get('/getMy/', function(req,res){
 
@@ -210,19 +514,15 @@ router.get('/getMy/', function(req,res){
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
 		//If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 	  models.Annonce.findAll({
 		where:{ user: decoded.id},
 		include: [{ model: models.Domaine, as: 'Domaine'}]
 		}).then(function (annonceFound) {
-			if (annonceFound==null) {
-				res.json({status: 500, message: "Not coincidences"});
-			}
+			
+			if (annonceFound==null) return res.status(404).send("Annonce not Found");
 			else{
 				var a = Array();
 
@@ -256,15 +556,71 @@ router.get('/getMy/', function(req,res){
 
 });
 
+/**
+ * @api {get} /annonce/ Request for get all annonces
+ * @apiName AnnonceGetAll
+ * @apiGroup Annonce
+ *
+ *
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} Token JSON Web Token with users id.
+ * @apiSuccess {Number} id Annonce ID.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   createdAt Date of publication.
+ * @apiSuccess {Date}   finalization Date of expiration.
+ * @apiSuccess {String} nom Lastname of the User.
+ * @apiSuccess {String} prenom Firstname of the .User
+ * @apiSuccess {String} email Users email.
+ * @apiSuccess {String} photo Users photo in format Base64.
+ * @apiSuccess {Number} tel Users phone number.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *   [{
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "domaine": "IT",
+ *		  "titre": "Developpeur Web",
+ * 		  "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		  "lat": "0.98798361241423",
+ *		  "lng": "21.3212309120937",
+ *		  "createAt": "2017-05-31T15:12:07.000Z",
+ *		  "finalization": "2017-07-01T00:00:00.000Z",
+ *		  "user": {
+ *		    "id": 15,
+ *		    "nom": "Marroquin",
+ *		    "prenom": "Amanda",
+ *		    "email": "amanda@gmail.com",
+ *		    "photo": null
+ *		  }
+ *		}
+ *	]
+ *
+ *
+ *
+ * @apiError AnnonceNotFound The id of the Annonce was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Annonce not found"
+ *		}
+ *
+ */
+
 // GET all annonces
 router.get('/', function(req,res){
 
 		models.Annonce.findAll({
 			include: [{ model: models.User, as: 'User'}, { model: models.Domaine, as: 'Domaine'}]
 		}).then(function (annonceFound) {
-			if (annonceFound==null) {
-				res.json({status: 500, message: "Not coincidences"});
-			}
+			
+			if (annonceFound==null)  return res.status(404).send("Annonce not Found");
+
 			else{
 				// Prepare output in JSON format
 				var a = Array();
@@ -301,7 +657,62 @@ router.get('/', function(req,res){
 
 });
 
-
+/**
+ * @api {get} /annonce/:id Request for get annonces by domaine
+ * @apiName AnnonceGet
+ * @apiGroup Annonce
+ *
+ * @apiParam {Number} id Domaine ID.
+ *
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} Token JSON Web Token with users id.
+ * @apiSuccess {Number} id Annonce ID.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   createdAt Date of publication.
+ * @apiSuccess {Date}   finalization Date of expiration.
+ * @apiSuccess {String} nom Lastname of the User.
+ * @apiSuccess {String} prenom Firstname of the .User
+ * @apiSuccess {String} email Users email.
+ * @apiSuccess {String} photo Users photo in format Base64.
+ * @apiSuccess {Number} tel Users phone number.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *   [{
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "domaine": "IT",
+ *		  "titre": "Developpeur Web",
+ * 		  "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		  "lat": "0.98798361241423",
+ *		  "lng": "21.3212309120937",
+ *		  "createAt": "2017-05-31T15:12:07.000Z",
+ *		  "finalization": "2017-07-01T00:00:00.000Z",
+ *		  "user": {
+ *		    "id": 15,
+ *		    "nom": "Marroquin",
+ *		    "prenom": "Amanda",
+ *		    "email": "amanda@gmail.com",
+ *		    "photo": null
+ *		  }
+ *		}
+ *	]
+ *
+ *
+ *
+ * @apiError AnnonceNotFound The id of the Annonce was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Annonce not found"
+ *		}
+ *
+ */
 
 // GET annonce by id 
 router.get('/:id', function(req,res){
@@ -311,9 +722,9 @@ router.get('/:id', function(req,res){
 			where:{ domaine: id},
 			include: [{ model: models.User, as: 'User'}, { model: models.Domaine, as: 'Domaine'}]
 		}).then(function (annonceFound) {
-			if (annonceFound==null) {
-				res.json({status: 500, message: "Not coincidences"});
-			}
+
+			if (annonceFound==null) return res.status(404).send("Annonce not Found");
+
 			else{
 				// Prepare output in JSON format
 				var a = Array();

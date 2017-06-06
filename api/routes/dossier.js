@@ -34,6 +34,89 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
+
+
+/**
+ * @api {get} /dossier/ Request for get a dossier
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierGet
+ * @apiGroup Dossier
+ *
+ *
+ * @apiSuccess {String} titre Dossier titre.
+ * @apiSuccess {Object} formation Array of users trainings.
+ * @apiSuccess {Object} experiance Array of users jobs experiance.
+ * @apiSuccess {Object} certificat Array of users certifications.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *		{
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ * @apiError DossierNotFound The id of the Dossier was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Dossier not found"
+ *		}
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ */
+
+
 // GET complete dossier by user id 
 router.get('/get/', function(req,res){
 
@@ -51,10 +134,8 @@ router.get('/get/', function(req,res){
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
 	  //If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
+
 	  var decoded = jwt.verify(token, 'gato');
 	  //If the user has other type of count send a unauthorized 
 	  if(decoded.type!=4 && decoded.type!=5) return res.sendStatus(500)
@@ -68,10 +149,8 @@ router.get('/get/', function(req,res){
 					user: decoded.id
 				}
 			}).then(function (dossierFound) {
-				if (dossierFound==null) {
-					res.json({status: 500, message: "Invalid_id"});
-					return callback(new Error('Invalid_id'));
-				}
+				if (dossierFound==null) return res.status(404).send("Dossier not found");
+
 				idUser = dossierFound.user;
 				dossier= {
 					titre : dossierFound.titre
@@ -177,6 +256,89 @@ router.get('/get/', function(req,res){
 	});
 });
 
+
+/**
+ * @api {post} /dossier/add/formation Request for add a new formation 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierAddFormation
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {String} ecole Name of the institute of formation.
+ * @apiParam {Number} domaine Domaine ID.
+ * @apiParam {String} diplome Name of the degree got
+ * @apiParam {Number} ville Ville ID.
+ * @apiParam {Date}   ddn Begining date.
+ * @apiParam {Date}   ddn Finish date.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
 // POST /add  create a new  formation instance
 router.post('/add/formation', urlencodedParser, function(req,res){
 
@@ -190,11 +352,8 @@ router.post('/add/formation', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Formation.create({
@@ -217,6 +376,88 @@ router.post('/add/formation', urlencodedParser, function(req,res){
 
 });//end post add
 
+
+/**
+ * @api {post} /dossier/add/experiance Request for add a new experiance 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierAddExperiance
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {String} titre Work poste name.
+ * @apiParam {String} description Description of the tasks.
+ * @apiParam {Number} ville Ville ID.
+ * @apiParam {Date}   ddn Begining date.
+ * @apiParam {Date}   ddn Finish date.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
 // POST /update  simple update of information
 router.post('/add/experiance', urlencodedParser, function(req,res){
 
@@ -230,11 +471,8 @@ router.post('/add/experiance', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Experiance.create({
@@ -256,6 +494,87 @@ router.post('/add/experiance', urlencodedParser, function(req,res){
 
 });//end post add
 
+
+/**
+ * @api {post} /dossier/add/Certificat Request for add a new certification 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierAddCertificat
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {String} titre Certification name.
+ * @apiParam {String} certifiante Name of certification Authority.
+ * @apiParam {Date}   rendu Date of expedition.
+ * @apiParam {Date}   expiration Date of expiration.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
 // POST /add add a new certificat
 router.post('/add/certificat', urlencodedParser, function(req,res){
 
@@ -269,11 +588,8 @@ router.post('/add/certificat', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.certificat.create({
@@ -294,6 +610,84 @@ router.post('/add/certificat', urlencodedParser, function(req,res){
 
 });//end post add
 
+/**
+ * @api {post} /dossier/update Request for up to date the dossier
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierUpdate
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {String} titre Certification name.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ *		{
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *
+ * 
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ */
+
 // POST /update  simple update of information
 router.post('/update', urlencodedParser, function(req,res){
 
@@ -307,11 +701,8 @@ router.post('/update', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Dossier.update({
@@ -332,6 +723,89 @@ router.post('/update', urlencodedParser, function(req,res){
 
 });//end post update
 
+
+/**
+ * @api {post} /dossier/update/formation Request forup to date a formation 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierUpdateFormation
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {Number} id Formation ID.
+ * @apiParam {String} ecole Name of the institute of formation.
+ * @apiParam {Number} domaine Domaine ID.
+ * @apiParam {String} diplome Name of the degree got
+ * @apiParam {Number} ville Ville ID.
+ * @apiParam {Date}   ddn Begining date.
+ * @apiParam {Date}   ddn Finish date.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 // POST /update  simple update of information
 router.post('/update/formation', urlencodedParser, function(req,res){
 
@@ -345,11 +819,8 @@ router.post('/update/formation', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Formation.update({
@@ -376,6 +847,87 @@ router.post('/update/formation', urlencodedParser, function(req,res){
 
 });//end post update
 
+/**
+ * @api {post} /dossier/update/experiance Request for up to date an experiance 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierUpdateExperiance
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {Number} id Experiance ID.
+ * @apiParam {String} titre Work poste name.
+ * @apiParam {String} description Description of the tasks.
+ * @apiParam {Number} ville Ville ID.
+ * @apiParam {Date}   ddn Begining date.
+ * @apiParam {Date}   ddn Finish date.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 // POST /update  simple update of information
 router.post('/update/experiance', urlencodedParser, function(req,res){
 
@@ -389,11 +941,8 @@ router.post('/update/experiance', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Experiance.update({
@@ -419,6 +968,87 @@ router.post('/update/experiance', urlencodedParser, function(req,res){
 
 });//end post update
 
+
+/**
+ * @api {post} /dossier/update/Certificat Request forup to date a certification 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierUpdateCertificat
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {Number} id Certification ID.
+ * @apiParam {String} titre Certification name.
+ * @apiParam {String} certifiante Name of certification Authority.
+ * @apiParam {Date}   rendu Date of expedition.
+ * @apiParam {Date}   expiration Date of expiration.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 // POST /update  simple update of information
 router.post('/update/certificat', urlencodedParser, function(req,res){
 
@@ -432,11 +1062,8 @@ router.post('/update/certificat', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.certificat.update({
@@ -461,6 +1088,92 @@ router.post('/update/certificat', urlencodedParser, function(req,res){
 
 });//end post update
 
+
+/**
+ * @api {delete} /dossier/delete/formation Request deletee a formation 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierDeleteFormation
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {Number} id Formation ID.
+
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ * @apiError FormationNotFound The id of the Formation was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Formation not found"
+ *		}
+ *
+ */ 
 // POST /delete gets urlencoded bodies
 router.delete('/delete/formation', urlencodedParser, function(req,res){
 
@@ -474,17 +1187,13 @@ router.delete('/delete/formation', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }	 
+	  
+	  	if (err) return res.status(403).send(err.message);	 
+	
 		models.Formation.find({
 		 	where: { id: req.body.id } 
 		 }).then(function(response){
-		 	if (response==null) {
-				resp = {status: 500, message: "formation not found"};
-				return res.end(JSON.stringify(resp));
-			}
+		 	if (response==null) return res.status(404).send("Formation not found");
 			
 			response.destroy();
 			res.header('token',token);
@@ -496,6 +1205,92 @@ router.delete('/delete/formation', urlencodedParser, function(req,res){
 
 });//end post delete
 
+/**
+ * @api {delete} /dossier/delete/experiance Request for delet an experiance 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierDeleteExperiance
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {Number} id Experiance ID.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ *  
+ * @apiError ExperiancenNotFound The id of the Experiance was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Experiance not found"
+ *		}
+ *
+ */ 
+ */ 
 // POST /delete gets urlencoded bodies
 router.delete('/delete/experiance', urlencodedParser, function(req,res){
 
@@ -509,17 +1304,13 @@ router.delete('/delete/experiance', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }	 
+	  
+	  	if (err) return res.status(403).send(err.message);	 
+		
 		models.Experiance.find({
 		 	where: { id: req.body.id } 
 		 }).then(function(response){
-		 	if (response==null) {
-				resp = {status: 500, message: "experiance not found"};
-				return res.end(JSON.stringify(resp));
-			}
+		 	if (response==null) return res.status(404).send("Experiance not found");
 			
 			response.destroy();
 			res.header('token',token);
@@ -530,6 +1321,89 @@ router.delete('/delete/experiance', urlencodedParser, function(req,res){
 
 });//end post delete
 
+/**
+ * @api {delete} /dossier/delete/Certificat Request delete certification 
+ * @apiHeader {String} token Users encripted key.
+ * @apiName DossierDeleteCertificat
+ * @apiGroup Dossier
+ *
+ *
+ * @apiParam {Number} id Certification ID.
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * {
+ *
+ *
+ *		  "dossier": {
+ *		    "titre": "Develeppeur"
+ *		  },
+ * 		  "formation": [
+ *		    {
+ *		      "id": 4,
+ *		      "ecole": "IUT2",
+ *		      "domaine": "Commerce - Immobilier",
+ *		      "diplome": "BAC+3",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2016-03-07T00:00:00.000Z",
+ *		      "ddf": "2017-01-09T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "experiance": [
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Assistante Commerciale ",
+ *		      "description": "Conseil aux entreprises",
+ *		      "ville": "Grenoble",
+ *		      "ddd": "2014-12-05T00:00:00.000Z",
+ *		      "ddf": "2015-01-05T00:00:00.000Z"
+ *		    }
+ *		  ],
+ *		  "certificat": [
+ *		    {
+ *		      "id": 2,
+ *		      "titre": "Certificat",
+ *		      "certifiante": "ABC",
+ *		      "rendu": "2017-05-01T00:00:00.000Z",
+ *		      "expiration": "2017-05-19T00:00:00.000Z"
+ *		    },
+ *		    {
+ *		      "id": 1,
+ *		      "titre": "Certification en commerce international",
+ * 		      "certifiante": "ABC",
+ *		      "rendu": "2016-07-01T00:00:00.000Z",
+ *		      "expiration": "2017-01-01T00:00:00.000Z"
+ *		    }
+ *		  ]
+ *		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ * @apiError Certificat nNotFound The id of the Certificat was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Certificat not found"
+ *		}
+ *
+ */ 
 // POST /delete gets urlencoded bodies
 router.delete('/delete/certificat', urlencodedParser, function(req,res){
 
@@ -543,17 +1417,13 @@ router.delete('/delete/certificat', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }	 
+	  
+	  	if (err) return res.status(403).send(err.message); 
+		
 		models.certificat.find({
 		 	where: { id: req.body.id } 
 		 }).then(function(response){
-		 	if (response==null) {
-				resp = {status: 500, message: "certificat not found"};
-				return res.end(JSON.stringify(resp));
-			}
+		 	if (response==null) return res.status(404).send("Certificat not found");
 			
 				response.destroy();
 				res.header('token',token);

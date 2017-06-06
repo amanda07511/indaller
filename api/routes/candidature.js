@@ -32,7 +32,45 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
-// POST /update  simple update of information
+
+/**
+ * @api {post} /candidature/add Request for add a new candidature
+ * @apiHeader {String} token Users encripted key.
+ * @apiName CandidatureAdd
+ * @apiGroup Candidature
+ *
+ *
+ * @apiParam {Number} annonce Annonce ID.
+ * @apiParam {String} message Text of the postulant.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *		  {
+ *		    "Candidature submit success"
+ *		  }
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
+// POST /add New Candidature
 router.post('/add', urlencodedParser, function(req,res){
 
 	//If there's no body parametres throw and error status
@@ -45,11 +83,8 @@ router.post('/add', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
 	  
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 		models.Candidat.create({
@@ -58,7 +93,7 @@ router.post('/add', urlencodedParser, function(req,res){
 			message: req.body.message,
 			status: 1
 		}).then(function(response){
-			res.sendStatus(200);
+			res.status(200).send("Candidature submit success");
 			
 		}).catch(function(err) {
 			response = { erro:err}; 
@@ -68,6 +103,56 @@ router.post('/add', urlencodedParser, function(req,res){
 	});//end jwt.verify
 
 });//end post add
+
+/**
+ * @api {post} /candidature/update Request for up to date a candidature
+ * @apiHeader {String} token Users encripted key.
+ * @apiName CandidatureUpdate
+ * @apiGroup Candidature
+ *
+ *
+ * @apiParam {Number} annonce Annonce ID.
+ * @apiParam {String} message Text of the postulant.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ *		  [
+ * 			{
+ *   			"status": 200,
+ *   			"id": 1,
+ *   			"message": "Bonjour, je suis interese dans ton project , je vodrais recevoir plus d'information pour vous faire un cotization",
+ *   			"createAt": "2017-06-01T12:57:56.000Z",
+ *  			"annonce": {
+ *    			"id": 1,
+ *     			"titre": "Developpeur Web",
+ *     			"description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *     			"lat": "0.98798361241423",
+ *     			"lng": "21.3212309120937",
+ *     			"ddd": "2017-05-25T00:00:00.000Z",
+ *     			"ddf": "2017-07-01T00:00:00.000Z"
+ *   		}
+ * 		]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 
 // POST /update  simple update of information
 router.post('/update', urlencodedParser, function(req,res){
@@ -82,10 +167,8 @@ router.post('/update', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  
+	  if (err) return res.status(403).send(err.message);
 	  
 	  var decoded = jwt.verify(token, 'gato');
 
@@ -109,6 +192,43 @@ router.post('/update', urlencodedParser, function(req,res){
 
 });//end post update
 
+
+/**
+ * @api {post} /candidature/update Request for change a status of candidature
+ * @apiHeader {String} token Users encripted key.
+ * @apiName CandidatureUpdate
+ * @apiGroup Candidature
+ *
+ *
+ * @apiParam {Number} annonce Annonce ID.
+ * @apiParam {Number} status Code status of the candidature.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ *		  {
+ *		    "Candidature submit success"
+ *		  }
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 // POST /update  simple update of information
 router.post('/change', urlencodedParser, function(req,res){
 
@@ -122,10 +242,8 @@ router.post('/change', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  
+	  if (err) return res.status(403).send(err.message);
 	  
 	  var decoded = jwt.verify(token, 'gato');
 
@@ -136,7 +254,7 @@ router.post('/change', urlencodedParser, function(req,res){
 		    	id: req.body.id
 		  }
 		}).then(function(response){
-			res.sendStatus(200);
+			res.status(200).send("Candidature update success");
 			
 		}).catch(function(err) {
 			response = { erro:err}; 
@@ -148,6 +266,72 @@ router.post('/change', urlencodedParser, function(req,res){
 });//end post update
 
 
+
+/**
+ * @api {get} /candidature/get/:id Request for get a candidature by id 
+ * @apiName CandidatureGetId
+ * @apiGroup Candidature
+ *
+ *
+ * @apiParam {Number} id Candidature ID.
+ *
+ *
+ * @apiSuccess {Number} id Candidature ID.
+ * @apiSuccess {String} message Text of the postulant.
+ * @apiSuccess {Date}   createdAt Date of postulation.
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} nom Lastname of the User.
+ * @apiSuccess {String} prenom Firstname of the .User
+ * @apiSuccess {String} email Users email.
+ * @apiSuccess {String} photo Users photo in format Base64.
+ * @apiSuccess {Number} tel Users phone number.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   finalization Date of expiration
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *		  {
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "message": "Bonjour, je suis interese dans ton project , je vodrais recevoir plus d'information pour vous faire un cotization",
+ *		  "createAt": "2017-06-01T12:57:56.000Z",
+ *		  "user": {
+ *		    "id": 53,
+ *		    "nom": "Montparne",
+ *		    "prenom": "Julie",
+ *		    "email": "julie@gmail.com",
+ *		    "photo": " "
+ *		  },
+ *		  "annonce": {
+ *		    "id": 1,
+ *		    "titre": "Developpeur Web",
+ *		    "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		    "lat": "0.98798361241423",
+ *		    "lng": "21.3212309120937",
+ *		    "ddd": "2017-05-25T00:00:00.000Z",
+ *		    "ddf": "2017-07-01T00:00:00.000Z"
+ *		  }
+ *		}
+ *
+ *
+ *
+ *
+ * @apiError CandidatureNotFound The id of the Candidature was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Candidature not found"
+ *		}
+ *
+ */
+
+
 // GET candidature by id 
 router.get('/get/:id', function(req,res){
 
@@ -157,9 +341,9 @@ router.get('/get/:id', function(req,res){
 		where:{ id: id},
 		include: [{ model: models.User, as: 'User'}, { model: models.Annonce, as: 'Annonce'}]
 	}).then(function (candidatFound) {
-		if (candidatFound==null) {
-			res.json({status: 500, message: "Not coincidences"});
-		}
+
+		if (candidatFound==null) return res.status(404).send("Candidature not found");
+
 		else{
 			// Prepare output in JSON format
 			response = { 
@@ -195,6 +379,54 @@ router.get('/get/:id', function(req,res){
 
 });
 
+/**
+ * @api {get} /candidature/getCandidatures/ Request for get candidatures by id user (Candidat)
+ * @apiHeader {String} token Users encripted key.
+ * @apiName CandidatureGetCandidats
+ * @apiGroup Candidature
+ *
+ *
+ * @apiSuccess {Number} id Candidature ID.
+ * @apiSuccess {String} message Text of the postulant.
+ * @apiSuccess {Date}   createdAt Date of postulation.
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   finalization Date of expiration
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *		  {
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "message": "Bonjour, je suis interese dans ton project , je vodrais recevoir plus d'information pour vous faire un cotization",
+ *		  "createAt": "2017-06-01T12:57:56.000Z",
+ *		  "user": {
+ *		    "id": 53,
+ *		    "nom": "Montparne",
+ *		    "prenom": "Julie",
+ *		    "email": "julie@gmail.com",
+ *		    "photo": " "
+ *		  }
+ *		}
+ *
+ *
+ *
+ *
+ * @apiError CandidatureNotFound The id of the Candidature was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Candidature not found"
+ *		}
+ *
+ */
+
 // GET candidatures by id user (candidats)
 router.get('/getCandidatures/', function(req,res){
 
@@ -203,20 +435,17 @@ router.get('/getCandidatures/', function(req,res){
 	//We get the token and we verify it 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
+		
 		//If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 	  models.Candidat.findAll({
 		where:{ candidat: decoded.id},
 		include: [{ model: models.Annonce, as: 'Annonce'}]
 		}).then(function (candidatFound) {
-			if (candidatFound==null) {
-				res.json({status: 500, message: "Not coincidences"});
-			}
+			
+			if (candidatFound==null) res.status(404).send("Candidature not found");
 			else{
 				var a = Array();
 
@@ -253,7 +482,69 @@ router.get('/getCandidatures/', function(req,res){
 
 });
 
-// GET candidatures by id user (candidats)
+/**
+ * @api {get} /candidature/getCandidat/:id Request for get candidatures by id annonce
+ * @apiHeader {String} token Users encripted key.
+ * @apiName CandidatureGetCandidatures
+ * @apiGroup Candidature
+ *
+ *
+ * @apiSuccess {Number} id Annonce ID.
+ * @apiSuccess {String} message Text of the postulant.
+ * @apiSuccess {Date}   createdAt Date of postulation.
+ * @apiSuccess {Boolean} Status Request status.
+ * @apiSuccess {String} nom Lastname of the User.
+ * @apiSuccess {String} prenom Firstname of the .User
+ * @apiSuccess {String} email Users email.
+ * @apiSuccess {String} photo Users photo in format Base64.
+ * @apiSuccess {Number} tel Users phone number.
+ * @apiSuccess {String} domaine Domaine name.
+ * @apiSuccess {String} titre Title of the annonce.
+ * @apiSuccess {String} descrition A description of the annonce
+ * @apiSuccess {Double} lat Latitude of the project in the annonce.
+ * @apiSuccess {Double} lng Longitude of the project in the annonce.
+ * @apiSuccess {Date}   finalization Date of expiration
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *		  {
+ *		  "status": 200,
+ *		  "id": 1,
+ *		  "message": "Bonjour, je suis interese dans ton project , je vodrais recevoir plus d'information pour vous faire un cotization",
+ *		  "createAt": "2017-06-01T12:57:56.000Z",
+ *		  "user": {
+ *		    "id": 53,
+ *		    "nom": "Montparne",
+ *		    "prenom": "Julie",
+ *		    "email": "julie@gmail.com",
+ *		    "photo": " "
+ *		  },
+ *		  "annonce": {
+ *		    "id": 1,
+ *		    "titre": "Developpeur Web",
+ *		    "description": "On cherche un/une developpeur web pour la construction de site commertial.",
+ *		    "lat": "0.98798361241423",
+ *		    "lng": "21.3212309120937",
+ *		    "ddd": "2017-05-25T00:00:00.000Z",
+ *		    "ddf": "2017-07-01T00:00:00.000Z"
+ *		  }
+ *		}
+ *
+ *
+ *
+ *
+ * @apiError CandidatureNotFound The id of the Candidature was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Candidature not found"
+ *		}
+ *
+ */
+
+// GET candidatures by id anonce 
 router.get('/getCandidat/:id', function(req,res){
 	var id=decodeURI(req.params.id);
 
@@ -263,10 +554,8 @@ router.get('/getCandidat/:id', function(req,res){
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
 		//If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
+
 	  var decoded = jwt.verify(token, 'gato');
 
 	  models.Candidat.findAll({

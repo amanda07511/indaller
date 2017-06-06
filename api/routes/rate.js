@@ -32,6 +32,45 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
+
+/**
+ * @api {post} /rate/add Request for add a new rate
+ * @apiHeader {String} token Users encripted key.
+ * @apiName RateAdd
+ * @apiGroup Rating
+ *
+ *
+ * @apiParam {Number} pour User ID.
+ * @apiParam {Number} raiting Note given to the user.
+
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ *     {
+ *		"Rate success commit"
+ * 		}
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
+
 // POST /add new rate
 router.post('/add', urlencodedParser, function(req,res){
 
@@ -45,20 +84,17 @@ router.post('/add', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
 	  
 	  var decoded = jwt.verify(token, 'gato');
-	  if(decoded.id == req.body.pour ) return res.sendStatus(403)
+	  if(decoded.id == req.body.pour ) return res.status(403).send("Invalid Request");
 
 		models.Rating.create({
 			de : decoded.id,
 			pour: req.body.pour,
 			rating: req.body.rating
 		}).then(function(response){
-			res.sendStatus(200);
+			res.res.status(200).send("Rate success commit");
 			
 		}).catch(function(err) {
 			response = { erro:err}; 
@@ -69,6 +105,56 @@ router.post('/add', urlencodedParser, function(req,res){
 
 });//end post add
 
+
+/**
+ * @api {post} /rate/update Request for up to date a rate
+ * @apiHeader {String} token Users encripted key.
+ * @apiName RateUpdate
+ * @apiGroup Rating
+ *
+ *
+ * @apiParam {Number} pour User ID.
+ * @apiParam {Number} raiting Note given to the user.
+
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * [
+ * 		{
+ *   		"status": 200,
+ *   		"id": 2,
+ *   		"rate": 5,
+ *   		"createAt": "2017-06-04T12:13:32.000Z",
+ *   		"pour": {
+ *     			"id": 15,
+ *   			"nom": "Marroquin",
+ *     			"prenom": "Amanda",
+ *     			"email": "amanda@gmail.com",
+ *     			"photo": null
+ *   		}
+ *  	}
+ * 	]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 // POST /update  simple update of information
 router.post('/update', urlencodedParser, function(req,res){
 
@@ -82,10 +168,8 @@ router.post('/update', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  
+	  if (err) return res.status(403).send(err.message);
 	  
 	  var decoded = jwt.verify(token, 'gato');
 
@@ -110,6 +194,54 @@ router.post('/update', urlencodedParser, function(req,res){
 });//end post update
 
 
+
+/**
+ * @api {delete} /rate/delete Request for delete a rate
+ * @apiHeader {String} token Users encripted key.
+ * @apiName RateDelete
+ * @apiGroup Rating
+ *
+ *
+ * @apiParam {Number} id Rate ID.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 303 Redirect
+ * [
+ * 		{
+ *   		"status": 200,
+ *   		"id": 2,
+ *   		"rate": 5,
+ *   		"createAt": "2017-06-04T12:13:32.000Z",
+ *   		"pour": {
+ *     			"id": 15,
+ *   			"nom": "Marroquin",
+ *     			"prenom": "Amanda",
+ *     			"email": "amanda@gmail.com",
+ *     			"photo": null
+ *   		}
+ *  	}
+ * 	]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ */ 
 // POST /delete gets urlencoded bodies
 router.delete('/delete', urlencodedParser, function(req,res){
 
@@ -123,17 +255,14 @@ router.delete('/delete', urlencodedParser, function(req,res){
 	//I take the token and i verify it. 
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
-	  if (err) {
-	  	response = { erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }	 
+	  
+	  	if (err) return res.status(403).send(err.message);	 
+		
 		models.Rating.find({
 		 	where: { id: req.body.id } 
 		 }).then(function(response){
-		 	if (response==null) {
-				resp = {status: 500, message: "experiance not found"};
-				return res.end(JSON.stringify(resp));
-			}
+		 	if (response==null) return res.status(404).send("Rate not found");
+			
 			if (response.de!=decoded.id) return res.sendStatus(401) 
 			
 			response.destroy();
@@ -145,6 +274,66 @@ router.delete('/delete', urlencodedParser, function(req,res){
 
 });//end post delete
 
+
+/**
+ * @api {get} /rate/getRates Request for get rates of a user
+ * @apiHeader {String} token Users encripted key.
+ * @apiHeader {Number} id Users id.
+ * @apiName RateUpdate
+ * @apiGroup Rating
+ *
+ *
+ * @apiSuccess {Number} status Status of request.
+ * @apiSuccess {Number} id Rate ID.
+ * @apiSuccess {Number} rate Note given to the user.
+ * @apiSuccess {Date} createdAt Date of creation.
+ * @apiSuccess {Object} de User information, how gives the rate.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ * [
+ * 		{
+ *   		"status": 200,
+ *   		"id": 2,
+ *   		"rate": 5,
+ *   		"createAt": "2017-06-04T12:13:32.000Z",
+ *   		"pour": {
+ *     			"id": 53,
+ *   			"nom": "Montparne",
+ *     			"prenom": "Julie",
+ *     			"email": "julie@gmail.com",
+ *     			"photo": null
+ *   		}
+ *  	}
+ * 	]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ * @apiError RateNotFound If theres not coincidences 
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Rate not Found
+ *     {
+ *       "error": "Rate not found"
+ *		}
+ *
+ */ 
 // GET candidatures by id user (candidats)
 router.get('/getRates/', function(req,res){
 
@@ -155,19 +344,17 @@ router.get('/getRates/', function(req,res){
 	var id = req.get('id');
 	jwt.verify(token, 'gato', function(err, decoded) {
 		//If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
+
 	  var decoded = jwt.verify(token, 'gato');
 
 	  models.Rating.findAll({
 		where:{ pour: id},
 		include: [{ model: models.User, as: 'De'}]
 		}).then(function (ratingFound) {
-			if (ratingFound==null) {
-				res.json({status: 500, message: "Not coincidences"});
-			}
+			
+			if (ratingFound==null) return res.status(404).send("Rate not found");
+			
 			else{
 
 				var a = Array();
@@ -203,6 +390,65 @@ router.get('/getRates/', function(req,res){
 
 });
 
+
+/**
+ * @api {get} /rate/MyRates Request for get rates that the user do
+ * @apiHeader {String} token Users encripted key.
+ * @apiName RateUpdate
+ * @apiGroup Rating
+ *
+ *
+ * @apiSuccess {Number} status Status of request.
+ * @apiSuccess {Number} id Rate ID.
+ * @apiSuccess {Number} rate Note given to the user.
+ * @apiSuccess {Date} createdAt Date of creation.
+ * @apiSuccess {Object} de User information, how gives the rate.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 Success
+ * [
+ * 		{
+ *   		"status": 200,
+ *   		"id": 2,
+ *   		"rate": 5,
+ *   		"createAt": "2017-06-04T12:13:32.000Z",
+ *   		"pour": {
+ *     			"id": 53,
+ *   			"nom": "Montparne",
+ *     			"prenom": "Julie",
+ *     			"email": "julie@gmail.com",
+ *     			"photo": null
+ *   		}
+ *  	}
+ * 	]
+ *
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError InvalidToken If the token sended is incorrect
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 403 Invalid Token
+ *     {
+ *       "error": "invalid signature"
+ *		}
+ *
+ * @apiError RateNotFound If theres not coincidences 
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Rate not Found
+ *     {
+ *       "error": "Rate not found"
+ *		}
+ *
+ */ 
 // GET candidatures by id user (candidats)
 router.get('/MyRates/', function(req,res){
 
@@ -212,19 +458,14 @@ router.get('/MyRates/', function(req,res){
 	var token=req.get('token');
 	jwt.verify(token, 'gato', function(err, decoded) {
 		//If the token is incorrect we sent a error message
-	  if (err) {
-	  	response = { status: 401, erro:err.message };
-	    return res.end(JSON.stringify(response));
-	  }
+	  if (err) return res.status(403).send(err.message);
 	  var decoded = jwt.verify(token, 'gato');
 
 	  models.Rating.findAll({
 		where:{ de: decoded.id},
 		include: [{ model: models.User, as: 'Pour'}]
 		}).then(function (ratingFound) {
-			if (ratingFound==null) {
-				res.json({status: 500, message: "Not coincidences"});
-			}
+			if (ratingFound==null) return res.status(4034).send("Rating not found");
 			else{
 
 				var a = Array();
