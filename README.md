@@ -25,6 +25,6 @@ C:\> sequelize db:migrate
 * Then run the app 
 ```
 C:\> node app.js
-``
+```
 ## Deployment
 To know more about the differents routes , you can find the API documentation in http://localhost:3000/
