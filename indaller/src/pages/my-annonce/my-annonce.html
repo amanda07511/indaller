@@ -1,0 +1,73 @@
+<ion-header>
+	<ion-navbar color="primary">
+    	<ion-title>Creer un annonce</ion-title>
+    	<ion-buttons end>
+		<button ion-button icon-only color="royal" (click)="presentPopover($event)">
+	    	<ion-icon name="md-more"></ion-icon>
+	   	</button>
+		</ion-buttons>
+	</ion-navbar>
+
+</ion-header>
+
+<ion-content  class="outer-content" padding>
+			
+	<form>
+		<ion-item>
+				    <ion-label>Titre</ion-label>
+				    <ion-input type="text"></ion-input>
+		</ion-item>	
+
+		<ion-item>
+				    <ion-label>Localization</ion-label>
+				    <ion-input type="text"></ion-input>
+		</ion-item>
+
+		<ion-item>
+				  <ion-label>Domaine</ion-label>
+				  <ion-select >
+				    <ion-option value="f">Female</ion-option>
+				    <ion-option value="m">Male</ion-option>
+				  </ion-select>
+		</ion-item>
+
+		<ion-item>
+				  	<ion-label>Date d'expiration</ion-label>
+				  	<ion-datetime displayFormat="DD/MM/YYYY"></ion-datetime>
+		</ion-item>
+
+		<ion-item>
+					<ion-label>Description</ion-label>
+					<ion-textarea></ion-textarea>
+		</ion-item>
+
+		<button ion-button class="submit-btn" full type="submit" >Garder </button>
+	
+	</form>
+			
+	<ion-card>
+				<ion-card-header>
+				   	<ion-icon name="md-clipboard"></ion-icon> Candidatures
+				</ion-card-header>
+				<ion-list>
+
+				 	<ion-item>
+						
+						<ion-avatar item-left>
+					    	<img src="assets/img/user.jpg">
+						</ion-avatar>
+						<ion-grid>
+							 <ion-row>
+							    <ion-col col-8><h2>Marty McFly</h2></ion-col>
+							    <ion-col col-4><p><ion-icon name="md-calendar"></ion-icon>Date</p></ion-col>
+							 </ion-row>
+						</ion-grid>
+						<p>Message</p>
+						
+					</ion-item>
+
+				</ion-list>
+
+	</ion-card>
+		
+</ion-content>

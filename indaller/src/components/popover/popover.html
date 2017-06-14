@@ -1,0 +1,25 @@
+<ion-list radio-group>
+      <ion-row>
+        <ion-col>
+          <button  ion-item detail-none class="text-button" [color]="isSecondary1 ? 'secondary' : 'white'"  (click)="setSelectedTitle('Service')"> Services </button>
+        </ion-col>
+        <ion-col>
+          <button  ion-item detail-none class="text-button" [color]="isSecondary2 ? 'secondary' : 'white'" (click)="setSelectedTitle('Annonce')"> Annonces </button>
+        </ion-col>
+      </ion-row>
+      <ion-item class="loc">
+       	  <ion-label>Localisation</ion-label>
+	      <ion-select  [(ngModel)]="filters.localisation" (ionChange)="selectLocalisation(filters.localisation)">
+		   	<ion-option [value]="TF" [selected]="filters.localisation == 'TF'">Toute France</ion-option>
+		    <ion-option [value]="apres" [selected]="filters.localisation == 'apres'">Àpres moi</ion-option>
+		    <ion-option [value]="K"  [selected]="filters.localisation == 'K'">À 1 Km </ion-option>
+		  </ion-select>
+	  </ion-item>
+	 <ion-item class="dom">
+	  <ion-label>Domain</ion-label>
+		  <ion-select [(ngModel)]="filters.domaine" (ionChange)="selectDomaine(filters.domaine)">
+		  	<ion-option [value]="none" [selected]="filters.domaine == 'none'">Toutes les domaines</ion-option>
+		    <ion-option *ngFor="let domaine of domaines" [value]="domaine.id"  [selected]="filters.domaine == domaine.id" >{{domaine.nom}}</ion-option>
+		  </ion-select>
+      </ion-item>
+</ion-list>

@@ -629,20 +629,14 @@ router.get('/', function(req,res){
 					a.push({ 
 						status: 200, 
 						id:annonceFound[i].id,
-						domaine:annonceFound[i].Domaine.nom, 
 						titre:annonceFound[i].titre, 
 						description: annonceFound[i].description,  
 						lat:annonceFound[i].lat, 
 						lng:annonceFound[i].lng, 
 						createAt: annonceFound[i].createdAt, 
 						finalization: annonceFound[i].ddf,
-						user: {
-							id: annonceFound[i].User.id, 
-							nom: annonceFound[i].User.nom, 
-							prenom:annonceFound[i].User.prenom,
-							email: annonceFound[i].User.email,  
-							photo:annonceFound[i].User.photo
-						}
+						user: annonceFound[i].User,
+						domaine : annonceFound[i].Domaine
 		   			});
 				}
 					

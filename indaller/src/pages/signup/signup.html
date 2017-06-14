@@ -1,0 +1,87 @@
+<ion-header>
+ 
+  <ion-navbar>
+
+    <ion-title>Create Account</ion-title>
+
+  </ion-navbar>
+ 
+</ion-header>
+ 
+ 
+<ion-content padding>
+
+ <div >
+    <form (ngSubmit)="singup()" #registerForm="ngForm">
+     
+      		<ion-list inset>
+
+          		<ion-item>
+		    		<ion-label stacked>Vouz voulez? </ion-label>
+		      		<ion-select [(ngModel)]="type.a" [ngModelOptions]="{standalone: true}" required>
+		        		<ion-option value="personne">Chercher des services</ion-option>
+      					<ion-option value=" fourniseur">Offrir un service</ion-option>
+		      		</ion-select>
+		    	</ion-item>
+
+				<ion-item>
+		    		<ion-label stacked>Vouz êtes? </ion-label>
+		    		<ion-select [(ngModel)]="type.b" [ngModelOptions]="{standalone: true}" required>
+		    			<ion-option value="simple">Un(e) personne</ion-option>
+      					<ion-option value="enterprise">Un enterprise</ion-option>
+		      		</ion-select>
+		    	</ion-item>
+
+
+          		<ion-item>
+              		<ion-input type="text" placeholder="Nom" name="nom" [(ngModel)]="registerCredentials.nom" required></ion-input>
+            	</ion-item>
+
+            	<ion-item>
+              		<ion-input type="text" placeholder="Prénom" name="prenom" [(ngModel)]="registerCredentials.prenom" required></ion-input>
+            	</ion-item>
+            
+            	<ion-item>
+              		<ion-input type="email" placeholder="Email" name="email" [(ngModel)]="registerCredentials.email" required></ion-input>
+            	</ion-item>
+            
+            	<ion-item>
+              		<ion-input type="password" placeholder="Password" name="password" [(ngModel)]="registerCredentials.password" required></ion-input>
+            	</ion-item>
+
+            	<ion-item>
+            		<ion-input type="number" placeholder="Telephone" name="tel" [(ngModel)]="registerCredentials.tel" required></ion-input>
+            	</ion-item>
+
+            	<ion-item>
+            		<ion-searchbar  type="number" placeholder="Code postal" name="cp"  required (ionInput)="searchVille($event)"></ion-searchbar>
+            	</ion-item>
+
+		    	<ion-item>
+		      		<ion-label stacked>Ville: </ion-label>
+		      		<ion-select [(ngModel)]="registerCredentials.ville" [ngModelOptions]="{standalone: true}" required>
+		        		<ion-option  *ngFor="let ville of villes" [value]="ville.id"   [disabled]="selectD" >{{ville.cp}} {{ville.nom}}</ion-option>
+		      		</ion-select>
+		    	</ion-item>
+
+		    	<ion-item>
+				  	<ion-label>Date de naissance</ion-label>
+				  	<ion-datetime displayFormat="DD/MM/YYYY" name="ddn" [(ngModel)]="registerCredentials.ddn" required></ion-datetime>
+				</ion-item>
+
+          	</ion-list>
+
+      
+      	<ion-row>
+      		<ion-col width-20></ion-col>
+        	<ion-col width-60 class="signup-col">
+          		<button ion-button class="submit-btn" full type="submit" [disabled]="!registerForm.form.valid">Resgistre</button>
+        	</ion-col>
+        	<ion-col width-20></ion-col>
+      	
+      	</ion-row>
+      
+    </form>
+  </div>
+
+</ion-content>

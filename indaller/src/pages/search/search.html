@@ -1,0 +1,62 @@
+
+<ion-header>
+
+	<ion-navbar color="primary">
+	  	
+	  	<ion-toolbar>
+		    <button ion-button menuToggle left>
+		    	<ion-icon name="menu"></ion-icon>
+		  	</button>
+		    <ion-searchbar (ionInput)="get($event)"></ion-searchbar>
+		    <ion-buttons end>
+		      	<button ion-button icon-only color="royal" (click)="presentPopover($event)">
+		      		<ion-icon name="funnel"></ion-icon>
+		      	</button>
+		    </ion-buttons>
+	  	</ion-toolbar>
+
+	</ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+	<ion-list>
+
+	    <button ion-item *ngFor="let service of services">
+	      	<ion-avatar item-left><img src="{{service.user.photo}}"></ion-avatar>
+	      	<ion-grid>
+				<ion-row>
+			    	<ion-col col-8><h2>{{service.titre}}</h2></ion-col>
+			    	<ion-col col-4  *ngIf="!!service.user.Ville">
+			    		<p><ion-icon name="pin"></ion-icon>{{service.user.Ville.ville_nom_reel}}</p>
+			    	</ion-col>
+			    	<ion-col col-4  *ngIf="!!service.createAt">
+						  <p>{{service.createAt}}</p>
+			    	</ion-col>
+			  	</ion-row>
+		  	</ion-grid>
+			<h3>{{service.domaine.nom}}</h3>
+	      	<h3>{{service.user.nom}} {{service.user.prenom}}</h3><br>
+	      	<p>{{service.description}}</p>
+	      	<br>
+		    <rating [(ngModel)]="rate" 
+		        readOnly="true"
+		        max="5" 
+		        emptyStarIconName="star-outline" 
+		        halfStarIconName="star-half" 
+		        starIconName="star"
+		        nullable="false"
+		        (ngModelChange)="onModelChange($event)"></rating>
+	    </button>
+
+	    
+
+	</ion-list>
+
+	
+
+</ion-content>
+
+
+

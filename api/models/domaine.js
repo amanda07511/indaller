@@ -8,6 +8,7 @@ module.exports = function(sequelize, DataTypes) {
         Domaine.hasMany(models.Enterprise, {foreignKey: 'domaine' });
         Domaine.hasMany(models.Formation, {foreignKey: 'domaine' });
         Domaine.hasMany(models.Annonce, {foreignKey: 'domaine' });
+        Domaine.hasMany(models.Dossier, {foreignKey: 'domaine' });
       }
     }
   });

@@ -1,0 +1,66 @@
+<ion-menu [content]="content" *ngIf="unlog" >
+
+  <ion-content class="masters">
+    <ion-list class="login">
+      <img  style="width: 70%;" src="assets/img/name.png" class="login-img">
+      <button ion-button class="login-button" full color="secondary" (click)="login()">Login </button>
+      <button ion-button class="login-button" full color="secondary" (click)="singup()" >SignUp</button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<ion-menu [content]="content" *ngIf="log">
+  
+  <ion-header>  
+    <ion-toolbar color="primary">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-3></ion-col>
+          <ion-col col-15><img  style="width: 70%;" src="assets/img/name.png"></ion-col>
+          <ion-col col-2 >
+            <ion-buttons end>
+              <button ion-button icon-only color="dark">
+                <ion-icon name="notifications" ></ion-icon>
+              </button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
+      <ion-item color="primary" *ngIf="user">
+        <ion-avatar item-left>
+          <img src="{{user.photo}}">
+        </ion-avatar>
+        <h2>{{user.nom}}</h2>
+        <p>{{user.type}}</p>
+      </ion-item>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon name='{{p.icon}}' ></ion-icon>
+        {{p.title}}
+      </button>
+    </ion-list>
+  </ion-content>
+
+  <ion-footer>
+    <ion-toolbar>
+      <button ion-button clear>
+        <ion-icon name="information-circle" color="secondary"></ion-icon> Information
+      </button><br>
+      <button ion-button clear (click)="logOut()">
+        <ion-icon name="md-log-out" color="dark"></ion-icon> Log out
+      </button>
+    </ion-toolbar>
+  </ion-footer>
+
+</ion-menu>
+
+
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

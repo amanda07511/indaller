@@ -1,0 +1,92 @@
+<ion-header>
+	<ion-navbar color="primary">
+  		<button ion-button menuToggle>
+    		<ion-icon name="menu"></ion-icon>
+    	</button>
+    	<ion-title>Mes Annonces</ion-title>
+	</ion-navbar>
+
+	<div padding >
+		<ion-segment [(ngModel)]="mAnnonces" color="dark2">
+			<ion-segment-button value="annonces" >
+		     	<ion-icon name="ios-paper"></ion-icon>  Annonces
+		    </ion-segment-button>
+		    <ion-segment-button value="candidatures">
+		      	<ion-icon name="md-paper-plane"></ion-icon>  Candidatures
+		    </ion-segment-button>
+		</ion-segment>
+	</div>
+
+</ion-header>
+
+<ion-content  class="outer-content" padding>
+	<div [ngSwitch]="mAnnonces">
+		
+	<button ion-button full type="submit" color="secondary">Add Annonce&nbsp;&nbsp;&nbsp; <ion-icon name="add"> </ion-icon></button>
+
+		<ion-list *ngSwitchCase="'annonces'">
+			<ion-item-sliding>
+				<button ion-item (click)="myAnnonce()">
+			      <ion-avatar item-left><img src="assets/img/user.jpg"></ion-avatar>
+			      <ion-grid>
+					  <ion-row>
+					    <ion-col col-8><h2>Uno</h2></ion-col>
+					    <ion-col col-4><p><ion-icon name="pin"></ion-icon>Place</p></ion-col>
+					  </ion-row>
+				  </ion-grid>
+				  <ion-grid>
+					  <ion-row>
+					    <ion-col col-8><h3>Subtitle</h3></ion-col>
+					    <ion-col col-4><p><ion-icon name="md-calendar"></ion-icon>Date</p></ion-col>
+					  </ion-row>
+				  </ion-grid>
+			      <p>Description...............................................</p>
+				</button>
+				<ion-item-options side="right" (ionSwipe)="saveItem(item)">
+					<button ion-button expandable color="danger" (click)="saveItem(item)">
+							<ion-icon name="trash"></ion-icon>
+					</button>
+				</ion-item-options>
+				<ion-item-options side="left" (ionSwipe)="saveItem(item)">
+					<button ion-button expandable color="secondary" (click)="saveItem(item)">
+						<ion-icon name="md-create"></ion-icon>
+					</button>
+				</ion-item-options>
+			</ion-item-sliding>
+		</ion-list><!--div profil-->		
+
+		<ion-list *ngSwitchCase="'candidatures'">
+			<ion-item-sliding>
+				<button ion-item>
+			      <ion-avatar item-left><img src="assets/img/user.jpg"></ion-avatar>
+			      <ion-grid>
+					  <ion-row>
+					    <ion-col col-8><h2>Uno</h2></ion-col>
+					    <ion-col col-4><p><ion-icon name="pin"></ion-icon>Place</p></ion-col>
+					  </ion-row>
+				  </ion-grid>
+				  <ion-grid>
+					  <ion-row>
+					    <ion-col col-8><h3>Subtitle</h3></ion-col>
+					    <ion-col col-4><p><ion-icon name="md-calendar"></ion-icon>Date</p></ion-col>
+					  </ion-row>
+				  </ion-grid>
+			      <p>Description...............................................</p>
+				</button>
+				<ion-item-options side="right" (ionSwipe)="saveItem(item)">
+					<button ion-button expandable color="danger" (click)="saveItem(item)">
+							<ion-icon name="trash"></ion-icon>
+					</button>
+				</ion-item-options>
+				<ion-item-options side="left" (ionSwipe)="saveItem(item)">
+					<button ion-button expandable color="secondary" (click)="saveItem(item)">
+						<ion-icon name="md-create"></ion-icon>
+					</button>
+				</ion-item-options>
+			</ion-item-sliding>
+		
+		</ion-list><!--div profil-->
+	
+	</div><!--div ngSwitch-->
+
+</ion-content>

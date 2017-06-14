@@ -1,0 +1,286 @@
+<ion-header>
+	<ion-navbar color="primary">
+  		<button ion-button menuToggle>
+    		<ion-icon name="menu"></ion-icon>
+    	</button>
+    	<ion-title>Mon Compte</ion-title>
+    	<ion-buttons end>
+		<button ion-button icon-only color="royal" (click)="presentPopover($event)">
+	    	<ion-icon name="md-more"></ion-icon>
+	   	</button>
+		</ion-buttons>
+	</ion-navbar>
+
+	<div padding >
+		<ion-segment [(ngModel)]="compte" color="dark2">
+			<ion-segment-button value="profil" >
+		     	<ion-icon name="md-person"></ion-icon>  Profil
+		    </ion-segment-button>
+		    <ion-segment-button value="dossier">
+		      	<ion-icon name="md-briefcase"></ion-icon>  Dossier
+		    </ion-segment-button>
+		</ion-segment>
+	</div>
+
+</ion-header>
+
+<ion-content  class="outer-content" padding>
+	<div [ngSwitch]="compte">
+		
+		<ion-list *ngSwitchCase="'profil'">
+			
+			<form>
+				<ion-row>
+					<ion-col col-3><ion-avatar item-left><img src="assets/img/user.jpg"></ion-avatar></ion-col>
+				    <ion-col col-18>
+				    	<ion-row>
+				        <ion-item>
+				        	<ion-label>Nom</ion-label>
+				    		<ion-input type="text"></ion-input>
+						</ion-item>
+						<ion-item>
+				    		<ion-label>Prénom</ion-label>
+							<ion-input type="text"></ion-input>
+						</ion-item>
+				    </ion-row>
+				    </ion-col>
+				</ion-row>
+				<ion-item>
+				    <ion-label>Email</ion-label>
+				    <ion-input type="email"></ion-input>
+				</ion-item>
+				<ion-item>
+				    <ion-label>Telephone</ion-label>
+				    <ion-input type="tel"></ion-input>
+				</ion-item>
+				<ion-item>
+				    <ion-label>Telephone</ion-label>
+				    <ion-input type="tel"></ion-input>
+				</ion-item>
+				<ion-item>
+				  <ion-label>Date de naissance</ion-label>
+				  <ion-datetime displayFormat="MM/DD/YYYY"></ion-datetime>
+				</ion-item>
+				<button ion-button class="submit-btn" full type="submit" >Garder changes</button>
+			</form>
+			
+			<ion-card>
+				<ion-card-header>
+				   	<ion-icon name="quote"></ion-icon> Notes
+				</ion-card-header>
+				<ion-list>
+				 	<ion-item>
+						<ion-avatar item-left>
+					    	<img src="assets/img/user.jpg">
+						</ion-avatar>
+						<h2>Marty McFly</h2>
+						<p>Elle fait un bonne travail</p>
+						<div>
+					    	<rating [(ngModel)]="rate" 
+						      	  readOnly="false"
+							      max="5" 
+							      emptyStarIconName="star-outline" 
+							      halfStarIconName="star-half" 
+							      starIconName="star"
+							      nullable="false"
+						      	(ngModelChange)="onModelChange($event)">    	
+							</rating>
+						</div>
+					</ion-item>
+				</ion-list>
+			</ion-card>
+		
+		</ion-list><!--div profil-->		
+
+		<ion-list *ngSwitchCase="'dossier'">
+				<ion-item>
+				    <ion-label>Titre</ion-label>
+				    <ion-input type="text"></ion-input>
+				</ion-item>
+
+				<ion-card>
+					
+					<ion-fab right>
+			            <button ion-fab mini (click)="showRadio()" color="secondary">
+			              <ion-icon name="add"></ion-icon>
+			            </button>
+			        </ion-fab>
+
+					<ion-card-header>
+					   	<ion-icon name="md-school"></ion-icon> Formation
+					</ion-card-header>
+
+					  
+					<ion-list>
+						<ion-item-sliding>
+					      <ion-item>
+					          <ion-grid item-content>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Ecole</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Domaine</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					            </ion-row>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Diplome</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Ville</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					            </ion-row>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Debut</ion-label>
+					                	<ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="debut"></ion-datetime>
+					                </ion-col>
+					                 <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Terminus</ion-label>
+					                	<ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="terminus"></ion-datetime>
+					                </ion-col>
+					    
+					            </ion-row>
+					          </ion-grid>
+
+					      	</ion-item>
+					      	<ion-item-options side="right" (ionSwipe)="saveItem(item)">
+							    <button ion-button expandable color="danger" (click)="saveItem(item)">
+							    	<ion-icon name="trash"></ion-icon>
+							    </button>
+							</ion-item-options>
+							<ion-item-options side="left" (ionSwipe)="saveItem(item)">
+							    <button ion-button expandable color="secondary" (click)="saveItem(item)">
+							    	<ion-icon name="md-create"></ion-icon>
+							    </button>
+							</ion-item-options>
+						</ion-item-sliding>
+					  </ion-list>
+
+				</ion-card>
+
+				<ion-card>
+					
+					<ion-fab right>
+			            <button ion-fab mini (click)="showRadio()" color="secondary">
+			              <ion-icon name="add"></ion-icon>
+			            </button>
+			        </ion-fab>
+
+					<ion-card-header>
+					   	<ion-icon name="md-clipboard"></ion-icon> Experiance
+					</ion-card-header>
+
+					  
+					<ion-list>
+						<ion-item-sliding>
+					      <ion-item>
+					          <ion-grid item-content>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Titre</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Enterprise</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					            </ion-row>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Debut</ion-label>
+					                	<ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="debut"></ion-datetime>
+					                </ion-col>
+					                 <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Terminus</ion-label>
+					                	<ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="terminus"></ion-datetime>
+					                </ion-col>
+					            </ion-row>
+					            <ion-row>
+					                <ion-col col-12 class="no-padding">
+					                	<ion-label stacked class="no-padding">Description</ion-label>
+					                	<ion-textarea></ion-textarea>
+					                </ion-col>
+					            </ion-row>
+					          </ion-grid>
+
+					      	</ion-item>
+					      	<ion-item-options side="right" (ionSwipe)="saveItem(item)">
+							    <button ion-button expandable color="danger" (click)="saveItem(item)">
+							    	<ion-icon name="trash"></ion-icon>
+							    </button>
+							</ion-item-options>
+							<ion-item-options side="left" (ionSwipe)="saveItem(item)">
+							    <button ion-button expandable color="secondary" (click)="saveItem(item)">
+							    	<ion-icon name="md-create"></ion-icon>
+							    </button>
+							</ion-item-options>
+						</ion-item-sliding>
+					  </ion-list>
+
+				</ion-card>
+
+				<ion-card>
+					
+					<ion-fab right>
+			            <button ion-fab mini (click)="showRadio()" color="secondary">
+			              <ion-icon name="add"></ion-icon>
+			            </button>
+			        </ion-fab>
+
+					<ion-card-header>
+					   	<ion-icon name="md-ribbon"></ion-icon> Certificat
+					</ion-card-header>
+
+					  
+					<ion-list>
+						<ion-item-sliding>
+					      <ion-item>
+					          <ion-grid item-content>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Titre</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Certifiante</ion-label>
+					                	<ion-input type="text" value=""></ion-input>
+					                </ion-col>
+					            </ion-row>
+					            <ion-row>
+					                <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Debut</ion-label>
+					                	<ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="debut"></ion-datetime>
+					                </ion-col>
+					                 <ion-col col-6 class="no-padding">
+					                	<ion-label stacked class="no-padding">Terminus</ion-label>
+					                	<ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="terminus"></ion-datetime>
+					                </ion-col>
+					            </ion-row>
+					          </ion-grid>
+
+					      	</ion-item>
+					      	<ion-item-options side="right" (ionSwipe)="saveItem(item)">
+							    <button ion-button expandable color="danger" (click)="saveItem(item)">
+							    	<ion-icon name="trash"></ion-icon>
+							    </button>
+							</ion-item-options>
+							<ion-item-options side="left" (ionSwipe)="saveItem(item)">
+							    <button ion-button expandable color="secondary" (click)="saveItem(item)">
+							    	<ion-icon name="md-create"></ion-icon>
+							    </button>
+							</ion-item-options>
+						</ion-item-sliding>
+					  </ion-list>
+
+				</ion-card>
+		</ion-list><!--div profil-->
+	
+	</div><!--div ngSwitch-->
+
+</ion-content>

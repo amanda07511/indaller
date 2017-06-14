@@ -1546,88 +1546,6 @@ define({ "api": [
   {
     "type": "post",
     "url": "/candidature/update",
-    "title": "Request for change a status of candidature",
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>Users encripted key.</p>"
-          }
-        ]
-      }
-    },
-    "name": "CandidatureUpdate",
-    "group": "Candidature",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "annonce",
-            "description": "<p>Annonce ID.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "status",
-            "description": "<p>Code status of the candidature.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "    HTTP/1.1 303 Redirect\n\t\t  {\n\t\t    \"Candidature submit success\"\n\t\t  }",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "InvalidCredentias",
-            "description": "<p>If there is not define one of the parametres .</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "InvalidToken",
-            "description": "<p>If the token sended is incorrect</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"error\": \"Unauthorized\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error-Response:",
-          "content": "    HTTP/1.1 403 Invalid Token\n    {\n      \"error\": \"invalid signature\"\n\t\t}",
-          "type": "json"
-        }
-      ]
-    },
-    "version": "0.0.0",
-    "filename": "./candidature.js",
-    "groupTitle": "Candidature"
-  },
-  {
-    "type": "post",
-    "url": "/candidature/update",
     "title": "Request for up to date a candidature",
     "header": {
       "fields": {
@@ -1669,6 +1587,88 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "    HTTP/1.1 303 Redirect\n\t\t  [\n\t\t\t{\n  \t\t\t\"status\": 200,\n  \t\t\t\"id\": 1,\n  \t\t\t\"message\": \"Bonjour, je suis interese dans ton project , je vodrais recevoir plus d'information pour vous faire un cotization\",\n  \t\t\t\"createAt\": \"2017-06-01T12:57:56.000Z\",\n \t\t\t\"annonce\": {\n   \t\t\t\"id\": 1,\n    \t\t\t\"titre\": \"Developpeur Web\",\n    \t\t\t\"description\": \"On cherche un/une developpeur web pour la construction de site commertial.\",\n    \t\t\t\"lat\": \"0.98798361241423\",\n    \t\t\t\"lng\": \"21.3212309120937\",\n    \t\t\t\"ddd\": \"2017-05-25T00:00:00.000Z\",\n    \t\t\t\"ddf\": \"2017-07-01T00:00:00.000Z\"\n  \t\t}\n\t\t]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidCredentias",
+            "description": "<p>If there is not define one of the parametres .</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidToken",
+            "description": "<p>If the token sended is incorrect</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"error\": \"Unauthorized\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "    HTTP/1.1 403 Invalid Token\n    {\n      \"error\": \"invalid signature\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./candidature.js",
+    "groupTitle": "Candidature"
+  },
+  {
+    "type": "post",
+    "url": "/candidature/update",
+    "title": "Request for change a status of candidature",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Users encripted key.</p>"
+          }
+        ]
+      }
+    },
+    "name": "CandidatureUpdate",
+    "group": "Candidature",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "annonce",
+            "description": "<p>Annonce ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Code status of the candidature.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 303 Redirect\n\t\t  {\n\t\t    \"Candidature submit success\"\n\t\t  }",
           "type": "json"
         }
       ]
@@ -3445,6 +3445,154 @@ define({ "api": [
     "groupTitle": "Rating"
   },
   {
+    "type": "get",
+    "url": "/user/domaines",
+    "title": "Request get all domaines",
+    "name": "DomainesGet",
+    "group": "User",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Domaine unique ID.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Name of the Domaine.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n    \t[\n\t\t\t  {\n\t\t\t    \"id\": 1,\n\t\t\t    \"nom\": \"Agriculture\"\n\t\t\t  },\n\t\t\t  {\n\t\t\t    \"id\": 2,\n\t\t\t    \"nom\": \"Agroalimentaire - Alimentation\"\n\t\t\t  },\n\t\t\t  {\n\t\t\t    \"id\": 3,\n\t\t\t    \"nom\": \"Animaux\"\n\t\t\t  }\n\t\t]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidCredentias",
+            "description": "<p>If there is not define one of the parametres .</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "DomaineNotFound",
+            "description": "<p>if there any domaine in data base</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"error\": \"Unauthorized\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "    HTTP/1.1 404 Not Foud\n    {\n      \"error\": \"Domaines not Found\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./user.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "/user/get/fournisseurs",
+    "title": "Request Users type fourniseurs",
+    "group": "User",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "titre",
+            "description": "<p>title of the users portafolio.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>description of teh portafolio.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "user",
+            "description": "<p>users information</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "domaine",
+            "description": "<p>domaine  information.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n    [\n\t\t\t{\n\t\t    \"titre\": \"Environmental Tech\",\n\t\t\t    \"description\": \"facilitate 24/7 architectures\",\n\t\t\t    \"user\": {\n\t\t\t      \"id\": 15,\n\t\t\t      \"prenom\": \"Amanda\",\n\t\t\t      \"nom\": \"Marroquin\",\n\t\t\t      \"email\": \"amanda@gmail.com\",\n\t\t\t      \"password\": \"gato\",\n\t\t\t      \"tel\": \"768411809\",\n\t\t\t      \"photo\": \"https://robohash.org/assumendadoloresodit.jpg?size=150x150&set=set1\",\n\t\t\t      \"ville_id\": 1,\n\t\t\t      \"ddn\": \"1995-07-11T00:00:00.000Z\",\n\t\t\t      \"etat\": true,\n\t\t\t      \"type\": 5,\n\t\t\t      \"createdAt\": \"2017-05-11T00:00:00.000Z\",\n\t\t\t      \"updatedAt\": \"2017-05-11T00:00:00.000Z\",\n\t\t\t      \"Ville\": {\n\t\t\t        \"id\": 1,\n\t\t\t        \"ville_departement\": \"01\",\n\t\t\t        \"ville_nom\": \"OZAN\",\n\t\t\t        \"ville_nom_simple\": \"ozan\",\n\t\t\t        \"ville_nom_reel\": \"Ozan\",\n\t\t\t        \"ville_code_postal\": \"01190\",\n\t\t\t        \"ville_longitude_deg\": 4.91667,\n\t\t\t        \"ville_latitude_deg\": 46.3833,\n\t\t\t        \"createdAt\": null,\n\t\t\t        \"updatedAt\": null\n\t\t\t      }\n\t\t\t    },\n\t\t\t    \"domaine\": {\n\t\t\t      \"id\": 19,\n\t\t\t      \"nom\": \"Environnement - Nature - Nettoyage\",\n\t\t\t      \"createdAt\": \"2017-05-11T15:49:51.000Z\",\n\t\t\t      \"updatedAt\": \"2017-05-11T15:49:51.000Z\"\n\t\t\t    }\n\t\t\t}    \n\n\t\t]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidCredentias",
+            "description": "<p>If there is not define one of the parametres .</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "Fournisseur",
+            "description": "<p>Not Found If theres any fournisseur</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"error\": \"Unauthorized\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "    HTTP/1.1 404 Not Found\n    {\n      \"error\": \"Fourniseurs not found\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./user.js",
+    "groupTitle": "User",
+    "name": "GetUserGetFournisseurs"
+  },
+  {
     "type": "post",
     "url": "/user/login",
     "title": "Request User Authentification Login",
@@ -4133,6 +4281,93 @@ define({ "api": [
         {
           "title": "Error-Response:",
           "content": "    HTTP/1.1 403 Invalid User\n    {\n      \"error\": \"Invalid User\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./user.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "/user/ville/:id",
+    "title": "Request get villes by code postal",
+    "name": "VillesGet",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>firts numbers of code postal.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Ville unique ID.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Name of the Ville.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "cp",
+            "description": "<p>Code postal of the ville</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n    \t[\n\t\t\t{\n\t\t   \t\t\"status\": 200,\n\t\t   \t\t\"id\": 14353,\n\t\t   \t\t\"nom\": \"Saint-Martin-d'Hères\",\n\t\t   \t\t\"cp\": \"38400\"\n\t\t \t}\n\t\t]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InvalidCredentias",
+            "description": "<p>If there is not define one of the parametres .</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "VilleNotFound",
+            "description": "<p>if there no coincidences whit the code postal</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n  \"error\": \"Unauthorized\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "    HTTP/1.1 404 Not Foud\n    {\n      \"error\": \"Ville not Found\"\n\t\t}",
           "type": "json"
         }
       ]

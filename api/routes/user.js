@@ -79,7 +79,7 @@ router.use(function timeLog(req, res, next) {
  *     }
  */
 
-// POST /login gets urlencoded bodies
+// POST /login 
 router.post('/login', urlencodedParser, function(req,res){
 
 	//If there's no body parametres throw and error status
@@ -306,6 +306,112 @@ router.get('/get', function(req,res){
 
 });
 
+
+/**
+ * @api {get} /user/get/fournisseurs Request Users type fourniseurs
+ * @apiGroup User
+ *
+ * @apiSuccess {String} titre title of the users portafolio.
+ * @apiSuccess {String} description description of teh portafolio.
+ * @apiSuccess {Object} user users information
+ * @apiSuccess {Object} domaine domaine  information.
+
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *			{
+ *		    "titre": "Environmental Tech",
+ *			    "description": "facilitate 24/7 architectures",
+ *			    "user": {
+ *			      "id": 15,
+ *			      "prenom": "Amanda",
+ *			      "nom": "Marroquin",
+ *			      "email": "amanda@gmail.com",
+ *			      "password": "gato",
+ *			      "tel": "768411809",
+ *			      "photo": "https://robohash.org/assumendadoloresodit.jpg?size=150x150&set=set1",
+ *			      "ville_id": 1,
+ *			      "ddn": "1995-07-11T00:00:00.000Z",
+ *			      "etat": true,
+ *			      "type": 5,
+ *			      "createdAt": "2017-05-11T00:00:00.000Z",
+ *			      "updatedAt": "2017-05-11T00:00:00.000Z",
+ *			      "Ville": {
+ *			        "id": 1,
+ *			        "ville_departement": "01",
+ *			        "ville_nom": "OZAN",
+ *			        "ville_nom_simple": "ozan",
+ *			        "ville_nom_reel": "Ozan",
+ *			        "ville_code_postal": "01190",
+ *			        "ville_longitude_deg": 4.91667,
+ *			        "ville_latitude_deg": 46.3833,
+ *			        "createdAt": null,
+ *			        "updatedAt": null
+ *			      }
+ *			    },
+ *			    "domaine": {
+ *			      "id": 19,
+ *			      "nom": "Environnement - Nature - Nettoyage",
+ *			      "createdAt": "2017-05-11T15:49:51.000Z",
+ *			      "updatedAt": "2017-05-11T15:49:51.000Z"
+ *			    }
+ *			}    
+ * 
+ *		]
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError Fournisseur Not Found If theres any fournisseur
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Fourniseurs not found"
+ * 		}
+ */  
+
+// GET fournisseurs by id 
+router.get('/get/fournisseur', function(req,res){
+
+
+	models.Dossier.findAll({
+  		include: [{ model: models.User, as: 'User', include: [{model: models.Ville, as: 'Ville'}] },{ model: models.Domaine, as: 'Domaine'}]
+  	}).then(function (userFound) {
+
+		if (userFound.length==0) return res.status(404).send("User not found");
+
+		else{
+			var a = Array();
+
+				for (var i = 0; i < userFound.length; i++) {
+					a.push({ 
+						titre: userFound[i].titre,
+						description: userFound[i].description,
+						user: userFound[i].User,
+						domaine : userFound[i].Domaine
+
+	   				});
+				}
+				
+	   			res.setHeader('Content-Type', 'text/plain');
+				res.end(JSON.stringify(a));
+		}
+			
+				
+	}).catch(function(err) { 
+		console.log(err); 
+	});
+
+});
 
 /**
  * @api {post} /user/update Request Update User Information 
@@ -626,7 +732,158 @@ router.post('/block', urlencodedParser, function(req,res){
 
 });//end post update
 
+/**
+ * @api {get} /user/ville/:id Request get villes by code postal
+ * @apiName VillesGet
+ * @apiGroup User
+ *
+ * @apiParam {String} id firts numbers of code postal.
+ *
+ * @apiSuccess {Integer} id Ville unique ID.
+ * @apiSuccess {String} nom Name of the Ville.
+ * @apiSuccess {Integer} cp Code postal of the ville
 
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     	[
+ *			{
+ *		   		"status": 200,
+ *		   		"id": 14353,
+ *		   		"nom": "Saint-Martin-d'Hères",
+ *		   		"cp": "38400"
+ *		 	}
+ *		]
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError VilleNotFound if there no coincidences whit the code postal
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Foud
+ *     {
+ *       "error": "Ville not Found"
+ * 		}
+ */  
+// GET get villes by code postal
+router.get('/ville/:id', function(req,res){
+
+	
+	if (!req.params.id) return res.status(401);
+	var id=decodeURI(req.params.id)+'%';
+
+	models.Ville.findAll({
+		where: { ville_code_postal: {
+          		like: id } 
+    	}
+	}).then(function (villeFound) {
+
+		if (villeFound.length==0) return res.status(404).send("Ville not found");
+
+		else{
+			var a = Array();
+
+				for (var i = 0; i < villeFound.length; i++) {
+					a.push({ 
+						status: 200,
+						id: villeFound[i].id, 
+						nom: villeFound[i].ville_nom_reel,
+						cp: villeFound[i].ville_code_postal
+	   				});
+				}
+				
+	   			res.setHeader('Content-Type', 'text/plain');
+				res.end(JSON.stringify(a));
+		}
+			
+				
+	}).catch(function(err) { 
+		console.log(err); 
+	});
+
+});
+
+/**
+ * @api {get} /user/domaines Request get all domaines
+ * @apiName DomainesGet
+ * @apiGroup User
+ *
+ *
+ * @apiSuccess {Integer} id Domaine unique ID.
+ * @apiSuccess {String} nom Name of the Domaine.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     	[
+ *			  {
+ *			    "id": 1,
+ *			    "nom": "Agriculture"
+ *			  },
+ *			  {
+ *			    "id": 2,
+ *			    "nom": "Agroalimentaire - Alimentation"
+ *			  },
+ *			  {
+ *			    "id": 3,
+ *			    "nom": "Animaux"
+ *			  }
+ *		]
+ *
+ *
+ * @apiError InvalidCredentias If there is not define one of the parametres .
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "error": "Unauthorized"
+ *     }
+ *
+ *
+ * @apiError DomaineNotFound if there any domaine in data base
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Foud
+ *     {
+ *       "error": "Domaines not Found"
+ * 		}
+ */
+
+// GET domaines 
+router.get('/domaines/', function(req,res){
+
+
+	models.Domaine.findAll().then(function (villeFound) {
+
+		if (villeFound.length==0) return res.status(404).send("Domaine not found");
+
+		else{
+			var a = Array();
+
+				for (var i = 0; i < villeFound.length; i++) {
+					a.push({ 
+						id: villeFound[i].id,
+						nom: villeFound[i].nom
+	   				});
+				}
+				
+	   			res.setHeader('Content-Type', 'text/plain');
+				res.end(JSON.stringify(a));
+		}
+			
+				
+	}).catch(function(err) { 
+		console.log(err); 
+	});
+
+});
 
 
 module.exports = router;

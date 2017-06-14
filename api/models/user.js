@@ -20,6 +20,7 @@ module.exports = function(sequelize, DataTypes) {
          User.hasMany(models.Candidat, {foreignKey: 'candidat' });
          User.hasMany(models.Rating, {foreignKey: 'de' });
          User.hasMany(models.Rating, {foreignKey: 'pour' });
+         User.hasMany(models.Dossier, {foreignKey: 'user' });
       }
     }
   });

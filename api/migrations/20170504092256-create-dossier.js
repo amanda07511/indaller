@@ -14,6 +14,12 @@ module.exports = {
       titre: {
         type: Sequelize.STRING
       },
+       domaine: {
+        type: Sequelize.INTEGER
+      },
+      description: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
