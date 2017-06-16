@@ -15,7 +15,7 @@ var rate 		= require('./routes/rate.js');
 
 //create application expres
 var app = express();
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 34385));
 
 // views is directory for all template files
 app.set('views', __dirname + '/routes/doc');
