@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.use(cors());
 
 app.get('/',function(req,res){
-	response.render('index');
+	"Hello word"
 });
 
 //Routes
