@@ -17,10 +17,14 @@ var rate 		= require('./routes/rate.js');
 var app = express();
 app.set('port', (process.env.PORT || 5000));
 
+// views is directory for all template files
+app.set('views', __dirname + '/routes/doc');
+app.set('view engine', 'ejs');
+
 app.use(cors());
 
 app.get('/',function(req,res){
-	opn('file:///C:/Users/amanda/Documents/LP/Stage/repo/api/routes/doc/index.html', {app: 'Chrome'});
+	response.render('index');
 });
 
 //Routes
