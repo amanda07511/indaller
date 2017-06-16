@@ -5,63 +5,73 @@
     	</button>
     	<ion-title>Mon Compte</ion-title>
     	<ion-buttons end>
-		<button ion-button icon-only color="royal" (click)="presentPopover($event)">
+		<button ion-button icon-only color="royal" (click)="presentPopover($event)" *ngIf="compte != 'dossier'">
 	    	<ion-icon name="md-more"></ion-icon>
 	   	</button>
 		</ion-buttons>
 	</ion-navbar>
 
 	<div padding >
-		<ion-segment [(ngModel)]="compte" color="dark2">
+		<ion-segment [(ngModel)]="compte" color="dark2" *ngIf="show == true">
 			<ion-segment-button value="profil" >
 		     	<ion-icon name="md-person"></ion-icon>  Profil
 		    </ion-segment-button>
-		    <ion-segment-button value="dossier">
+		    <ion-segment-button value="dossier" >
 		      	<ion-icon name="md-briefcase"></ion-icon>  Dossier
 		    </ion-segment-button>
 		</ion-segment>
 	</div>
 
 </ion-header>
-
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <ion-content  class="outer-content" padding>
 	<div [ngSwitch]="compte">
 		
-		<ion-list *ngSwitchCase="'profil'">
+		<ion-list *ngSwitchCase="'profil'" >
 			
-			<form>
+			<form *ngIf="data">
 				<ion-row>
-					<ion-col col-3><ion-avatar item-left><img src="assets/img/user.jpg"></ion-avatar></ion-col>
+					<ion-col col-3><ion-avatar item-left><img src="{{data.photo}}"></ion-avatar></ion-col>
 				    <ion-col col-18>
 				    	<ion-row>
 				        <ion-item>
-				        	<ion-label>Nom</ion-label>
-				    		<ion-input type="text"></ion-input>
+				        	<ion-label>Nom: </ion-label>
+				    		<ion-input type="text" required [disabled]="!edit" value="{{data.nom}}"></ion-input>
 						</ion-item>
 						<ion-item>
-				    		<ion-label>Prénom</ion-label>
-							<ion-input type="text"></ion-input>
+				    		<ion-label>Prenom: </ion-label>
+							<ion-input type="text" required [disabled]="!edit" value="{{data.prenom}}"></ion-input>
 						</ion-item>
 				    </ion-row>
 				    </ion-col>
 				</ion-row>
 				<ion-item>
-				    <ion-label>Email</ion-label>
-				    <ion-input type="email"></ion-input>
+					<ion-label>Email: </ion-label>
+				    <ion-input type="text" required disabled value="{{data.email}}"></ion-input>
 				</ion-item>
 				<ion-item>
-				    <ion-label>Telephone</ion-label>
-				    <ion-input type="tel"></ion-input>
+				    <ion-label>Telephone: </ion-label>
+				    <ion-input type="tel" required [disabled]="!edit" value="{{data.tel}}"></ion-input>
 				</ion-item>
 				<ion-item>
-				    <ion-label>Telephone</ion-label>
-				    <ion-input type="tel"></ion-input>
+				    <ion-label>Ville: </ion-label>
+				    <ion-input type="text" disabled value="{{data.ville.ville_nom_reel}}"></ion-input>
+
 				</ion-item>
-				<ion-item>
-				  <ion-label>Date de naissance</ion-label>
-				  <ion-datetime displayFormat="MM/DD/YYYY"></ion-datetime>
+				<ng2-completer [(ngModel)]="searchStr" name ="captain" [datasource]="dataService" [minSearchLength]="0"></ng2-completer>`
+				<ion-item >
+				  <ion-label>Date de naissance: </ion-label>
+				  <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="data.ddn"  [ngModelOptions]="{standalone: true}"  [disabled]="!edit" required></ion-datetime>
 				</ion-item>
-				<button ion-button class="submit-btn" full type="submit" >Garder changes</button>
+
+				<button ion-button class="submit-btn" full type="submit" [disabled]="!edit" >Garder changes</button>
 			</form>
 			
 			<ion-card>

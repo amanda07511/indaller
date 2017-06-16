@@ -292,7 +292,7 @@ router.get('/get', function(req,res){
 	  			email: userFound.email, 
 	  			photo: userFound.photo,
 	  			tel: userFound.tel,
-				ville: userFound.Ville.ville_nom_reel,
+				ville: userFound.Ville,
 				ddn: userFound.ddn,
 				type: userFound.type 
 			};
@@ -807,6 +807,70 @@ router.get('/ville/:id', function(req,res){
 				
 	}).catch(function(err) { 
 		console.log(err); 
+	});
+
+});
+
+router.get('/villeNom/:nom', function(req,res){
+
+	
+	if (!req.params.nom) return res.status(401);
+	var nom=decodeURI(req.params.nom)+'%';
+
+	models.Ville.findAll({
+		where: { ville_nom_reel: {
+          		like: nom } 
+    	}
+	}).then(function (villeFound) {
+
+		if (villeFound.length==0) return res.status(404).send("Ville not found");
+
+		else{
+			var a = Array();
+
+				for (var i = 0; i < villeFound.length; i++) {
+					a.push({ 
+						status: 200,
+						id: villeFound[i].id, 
+						nom: villeFound[i].ville_nom_reel,
+						cp: villeFound[i].ville_code_postal
+	   				});
+				}
+				
+	   			res.setHeader('Content-Type', 'text/plain');
+				res.end(JSON.stringify(a));
+		}
+			
+				
+	}).catch(function(err) { 
+		console.log(err); 
+	});
+
+});
+
+router.get('/villes/', function(req,res){
+
+	models.Ville.findAll().then(function (villeFound) {
+
+		if (villeFound.length==0) return res.status(404).send("Ville not found");
+
+		else{
+			var a = Array();
+
+				for (var i = 0; i < villeFound.length; i++) {
+					a.push({ 
+						id: villeFound[i].id, 
+						nom: villeFound[i].ville_nom_reel
+	   				});
+				}
+				
+	   			res.setHeader('Content-Type', 'text/plain');
+				res.end(JSON.stringify(a));
+		}
+			
+				
+	}).catch(function(err) { 
+		return res.status(500).send(err);
 	});
 
 });

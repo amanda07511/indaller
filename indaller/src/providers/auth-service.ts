@@ -35,7 +35,6 @@ export class AuthService {
 
     
       return new Promise((resolve, reject) => {
-         console.log(credentials);
         this.http.post(this.url+'user/login', body ,options)
           .subscribe(res => {
             let data = res.json();
@@ -70,7 +69,6 @@ export class AuthService {
                 '&type='+ details.type
 
      return new Promise((resolve, reject) => {
-        console.log(details);
         this.http.post(this.url+'user/signup', body , options )
           .subscribe(res => {
             let data = res.json();
@@ -95,9 +93,6 @@ export class AuthService {
 
   public loadVilles(searchTerm) {
     
-    
-   console.log(this.url+'user/ville/'+searchTerm);
-    
     return new Promise(resolve => {
       this.http.get(this.url+'user/ville/'+searchTerm)
         .map(res => res.json())
@@ -107,9 +102,20 @@ export class AuthService {
         });
     });
   }
+  public loadAllVilles() {
+    
+     
+    return new Promise(resolve => {
+      this.http.get(this.url+'user/villes/')
+        .map(res => res.json())
+        .subscribe(data => {
+          this.villes =  data;
+          resolve(this.villes);
+        });
+    });
+  }
 
   public getUser(token){
-    console.log(token);
     let headers = new Headers();
      headers.append('token', token);
     let options = new RequestOptions({ headers: headers });
@@ -121,6 +127,21 @@ export class AuthService {
         .subscribe(data => {
           this.user =  data;
           resolve(this.user);
+        });
+    });
+  }
+
+  public loadVilles2(searchTerm) {
+    
+    
+   console.log(this.url+'user/villeNom/'+searchTerm);
+    
+    return new Promise(resolve => {
+      this.http.get(this.url+'user/villeNom/'+searchTerm)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.villes =  data;
+          resolve(this.villes);
         });
     });
   }

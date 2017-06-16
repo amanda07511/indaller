@@ -13,11 +13,13 @@ import { SignupPage } from '../pages/signup/signup';
 //My providers
 import { AuthService } from '../providers/auth-service';
 import { SearchService } from '../providers/search-service';
+
 //My components
 import {Popover} from '../components/popover/popover';
-// Import ionic2-rating module
+// Imports 
 import { Ionic2RatingModule } from 'ionic2-rating';
 import { IonicStorageModule } from '@ionic/storage';
+import { Ng2CompleterModule } from "ng2-completer";
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { IonicStorageModule } from '@ionic/storage';
   imports: [
     IonicModule.forRoot(MyApp),
     Ionic2RatingModule,
-    IonicStorageModule.forRoot() 
+    IonicStorageModule.forRoot(),
+    Ng2CompleterModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

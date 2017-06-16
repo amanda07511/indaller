@@ -2,7 +2,7 @@
   "name": "indaller",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
     "connect": "^3.6.2",
     "cors": "^2.8.3",
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "amanda07511"
+    "url": "https://github.com/amanda07511/indaller"
   },
   "author": "amanda marroquin",
   "license": "ISC"
