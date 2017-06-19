@@ -163,6 +163,23 @@ router.post('/signup', urlencodedParser, function (req, res) {
   //If one of the parametres is not defined throw and error status
   if(!req.body.nom||!req.body.prenom||!req.body.email||!req.body.password||!req.body.tel||!req.body.ville||!req.body.photo||!req.body.ddn||!req.body.type) return res.sendStatus(401)
 
+  	var type = req.body.type;
+  	console.log(req.body.ville);
+
+  	var id;
+  	var etat;
+  	var token;
+  	var enterprise;
+  	var user;
+  	var dossier;
+
+  	if(type == 2){
+  		etat = 1;
+  	}
+  	else{
+  		etat = 0;
+  	}
+
   	async.series([
 		// fonction #1 for check that the users email is not than BD.
 		function(callback) {
@@ -191,28 +208,62 @@ router.post('/signup', urlencodedParser, function (req, res) {
 				password: req.body.password,
 				photo: req.body.photo,
 				tel: req.body.tel,
-				ville: req.body.ville,
+				ville_id: req.body.ville,
 				ddn: req.body.ddn,
-				type: req.body.type
+				type: type,
+				etat: etat
 			}).then(function(newUser){
 				
 				//create a token with user informationand 
-				var token = jwt.sign({id: newUser.id,type: newUser.type}, 'gato');
-				
-				// Prepare output in JSON format
-				response = {status: 200, token:token};
-				res.setHeader('Content-Type', 'text/plain');
-				res.end(JSON.stringify(response));
-				
+				token = jwt.sign({id: newUser.id,type: newUser.type}, 'gato');
+				id = newUser.id;
+				user = newUser;
+
 				callback();
+				
 			}).catch(function(err){ 
 				return res.status(500).send(err);
 			});//end newUser
 
+		},// fonction #3 for create an empty dossier or empty enterprise.
+		function(callback) {
+			// If the user is a fournisseur
+				if(type == 4 || type == 5){
+
+					//Create a Dossier user
+					var newDossier = models.Dossier.create({
+						user: id,
+						domaine: 1
+					}).then(function(newDossier){
+						dossier = newDossier;
+						console.log(dossier);
+					}).catch(function(err){ 
+						return res.status(500).send(err);
+					});//end newDossier
+
+				}
+				// If the user is a fournisseur is an enterprise
+				if(type == 3 || type == 5){
+					//Create a Dossier user
+					var newEnterprise = models.Enterprise.create({
+						user: id
+					}).then(function(newEnterprise){
+						enterprise = newEnterprise;
+						console.log(enterprise);
+					}).catch(function(err){ 
+						return res.status(500).send(err);
+					});//end newUser
+				}
+				callback();
+
 		},],
 		function(err, results) {
-			if (err) return (err);
-	  		res.end();
+			if (err) return res.status(500).send(err);
+	  		
+			response = {status: 200, token:token, user: user, dossier: dossier, enterprise: enterprise };
+			res.setHeader('Content-Type', 'text/plain');
+			res.end(JSON.stringify(response));
+
 	});//end Async
 });
 

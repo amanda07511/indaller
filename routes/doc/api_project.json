@@ -1,13 +1,13 @@
 {
   "name": "Indaller",
   "version": "0.1.0",
-  "description": "API for Indaller App",
+  "description": "API for Indaller App, Base Url: https://indaller.herokuapp.com/ ",
   "sampleUrl": false,
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2017-06-14T17:02:08.705Z",
+    "time": "2017-06-16T12:28:40.660Z",
     "url": "http://apidocjs.com",
     "version": "0.17.6"
   }
