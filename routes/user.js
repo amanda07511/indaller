@@ -512,7 +512,7 @@ router.post('/update', urlencodedParser, function(req,res){
 	//If there's no body parametres throw and error status
 	if (!req.body) return res.sendStatus(401)
 	//If one of the parametres is not defined throw and error status
-	if(!req.body.nom||!req.body.prenom||!req.body.password||!req.body.tel||!req.body.ville||!req.body.photo||!req.body.ddn) return res.sendStatus(401)
+	if(!req.body.nom||!req.body.prenom||!req.body.tel||!req.body.ville||!req.body.photo||!req.body.ddn) return res.sendStatus(401)
 	//If header token is not defined throw and error status
 	if(!req.get('token')) return res.sendStatus(401)
 
@@ -526,7 +526,6 @@ router.post('/update', urlencodedParser, function(req,res){
 		models.User.update({
 		  	nom: req.body.nom,
 			prenom: req.body.prenom,
-			password: req.body.password,
 			photo: req.body.photo,
 			tel: req.body.tel,
 			ville_id: req.body.ville,
