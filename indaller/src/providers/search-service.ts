@@ -14,7 +14,7 @@ export class SearchService {
   
   data: any;
   items: any;
-  url = "http://localhost:3000/";
+  url = "https://indaller.herokuapp.com/";
   item : any; 
 
   constructor(public http: Http) {

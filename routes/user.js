@@ -472,8 +472,7 @@ router.get('/get/fournisseur', function(req,res){
  *
  * @apiParam {String} nom Lastname of the User.
  * @apiParam {String} prenom Firstname of the .User
- * @apiParam {String} email Users email
- * @apiParam {String} password Users secret word.
+ * @apiParam {String} email Users email.
  * @apiParam {String} photo Users photo in format Base64.
  * @apiParam {Number} tel Users phone number.
  * @apiParam {Number} ville City ID.
