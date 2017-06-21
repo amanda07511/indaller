@@ -11,12 +11,6 @@ module.exports = {
       ville_departement: {
         type: Sequelize.STRING
       },
-      ville_nom: {
-        type: Sequelize.STRING
-      },
-      ville_nom_simple: {
-        type: Sequelize.STRING
-      },
       ville_nom_reel: {
         type: Sequelize.STRING
       },

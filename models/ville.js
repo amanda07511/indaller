@@ -2,8 +2,6 @@
 module.exports = function(sequelize, DataTypes) {
   var Ville = sequelize.define('Ville', {
     ville_departement: DataTypes.STRING,
-    ville_nom: DataTypes.STRING,
-    ville_nom_simple: DataTypes.STRING,
     ville_nom_reel: DataTypes.STRING,
     ville_code_postal: DataTypes.STRING,
     ville_longitude_deg: DataTypes.FLOAT,
