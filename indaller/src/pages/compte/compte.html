@@ -23,14 +23,7 @@
 	</div>
 
 </ion-header>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+
 <ion-content  class="outer-content" padding>
 	<div [ngSwitch]="compte">
 		
@@ -58,14 +51,9 @@
 				</ion-item>
 				<ion-item>
 				    <ion-label>Telephone: </ion-label>
-				    <ion-input type="tel" required [disabled]="!edit" value="{{data.tel}}"></ion-input>
+				    <ion-input type="tel" required [disabled]="!edit"  value="{{data.tel}}"></ion-input>
 				</ion-item>
-				<ion-item>
-				    <ion-label>Ville: </ion-label>
-				    <ion-input type="text" disabled value="{{data.ville.ville_nom_reel}}"></ion-input>
-
-				</ion-item>
-				<ng2-completer [(ngModel)]="searchStr" name ="captain" [datasource]="dataService" [minSearchLength]="0"></ng2-completer>`
+				
 				<ion-item >
 				  <ion-label>Date de naissance: </ion-label>
 				  <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="data.ddn"  [ngModelOptions]="{standalone: true}"  [disabled]="!edit" required></ion-datetime>

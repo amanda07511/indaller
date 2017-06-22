@@ -19,4 +19,16 @@ page-compte {
    		 margin: 0px !important;
 	}
 
+	.searchbar-md {
+		.searchbar-input{
+			padding: 0px;
+			box-shadow: none;
+		}
+		.searchbar-search-icon{
+			background-image: url(main.css);
+    		width: 0px; 
+    		height: 0px;
+		}
+	}
+
 }

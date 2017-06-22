@@ -1,7 +1,6 @@
 
 import { NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { CompleterService, CompleterData } from 'ng2-completer';
 import {JwtHelper} from "angular2-jwt";
 import { Storage } from '@ionic/storage';
 
@@ -43,16 +42,12 @@ export class ComptePage {
   user: any;
   show: any;
   edit: any;
-  protected searchStr: string;
-  protected captain: string;
-  protected dataService: CompleterData;
-  protected searchData: any;
-  protected captains = ['James T. Kirk', 'Benjamin Sisko', 'Jean-Luc Picard', 'Spock', 'Jonathan Archer', 'Hikaru Sulu', 'Christopher Pike', 'Rachel Garrett' ];
- 
-  constructor(private completerService: CompleterService, public navCtrl: NavController, private auth: AuthService, public navParams: NavParams, private popoverCtrl: PopoverController, public storage: Storage) {
+  villes: any;
+  searchTerm: string = '';
+  
+  constructor(public navCtrl: NavController, private auth: AuthService, public navParams: NavParams, private popoverCtrl: PopoverController, public storage: Storage) {
     
     this.getData();
-    this.getVilles();
     this.edit = false;
     
 
@@ -103,16 +98,25 @@ export class ComptePage {
         });
   }
 
-  getVilles(){
 
-    this.auth.loadAllVilles().then((result) => {
-           this.searchData = result;
-        }, (err) => {
-            console.log(err);
+  searchVille(ev: any){
+    this.villes = [''];
+
+    this.searchTerm = ev.target.value;
+    if (this.searchTerm!=null) {
+      console.log(this.searchTerm);
+    }
+    
+    if(this.searchTerm.length != null){
+      this.auth.loadVilles2(this.searchTerm).then(data => {
+          if(data!=null){
+            this.villes = data;
+          }
         });
+    }
   }
 
-
+ 
 
  
 }

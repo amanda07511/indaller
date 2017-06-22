@@ -19,7 +19,6 @@ import {Popover} from '../components/popover/popover';
 // Imports 
 import { Ionic2RatingModule } from 'ionic2-rating';
 import { IonicStorageModule } from '@ionic/storage';
-import { Ng2CompleterModule } from "ng2-completer";
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import { Ng2CompleterModule } from "ng2-completer";
     IonicModule.forRoot(MyApp),
     Ionic2RatingModule,
     IonicStorageModule.forRoot(),
-    Ng2CompleterModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

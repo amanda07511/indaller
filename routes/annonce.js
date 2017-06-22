@@ -445,7 +445,6 @@ router.get('/getId/:id', function(req,res){
  * @apiGroup Annonce
  *
  *
- * @apiParam {Number} id Annonce ID.
  *
  *
  * @apiSuccess {Boolean} Status Request status.

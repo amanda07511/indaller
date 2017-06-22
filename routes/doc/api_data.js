@@ -723,19 +723,6 @@ define({ "api": [
     },
     "name": "AnnonceGetMy",
     "group": "Annonce",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Annonce ID.</p>"
-          }
-        ]
-      }
-    },
     "success": {
       "fields": {
         "Success 200": [
@@ -4133,14 +4120,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "email",
-            "description": "<p>Users email</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "password",
-            "description": "<p>Users secret word.</p>"
+            "description": "<p>Users email.</p>"
           },
           {
             "group": "Parameter",
